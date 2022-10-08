@@ -30,12 +30,12 @@ public class UserController {
             Map<String , Object> response = new HashMap<>();
             response.put("error", firstError.getDefaultMessage());
 
-            userService.signUp(request);
-
             return ResponseEntity
                     .badRequest()
                     .body(response);
         }
+
+        userService.signUp(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
