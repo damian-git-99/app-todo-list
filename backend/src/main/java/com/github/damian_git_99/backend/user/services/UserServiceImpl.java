@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyTakenException("Email is already Taken");
         }
 
-        log.info("hashing password");
         String hashedPassword = passwordEncoder.encode(userRequest.getPassword());
 
         User user = User.builder()
@@ -42,6 +41,7 @@ public class UserServiceImpl implements UserService {
                 .email(userRequest.getEmail())
                 .build();
 
+        log.info("saving new user in the db");
         userRepository.save(user);
     }
 
