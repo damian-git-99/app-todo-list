@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { signup } from '../api/UserApi';
+import { Alert } from '../components/Alert';
 import { Spinner } from '../components/Spinner';
-import { errorMessage, successMessage } from '../util/messages';
+import { successMessage } from '../util/messages';
 import { isThereAnEmptyField } from '../util/validations';
 
 export const SignUp = () => {
@@ -11,9 +13,10 @@ export const SignUp = () => {
     password: '',
     repeatPassword: ''
   };
-
+  const navigate = useNavigate();
   const [form, setform] = useState(initialState);
   const [loading, setloading] = useState(false);
+  const [error, seterror] = useState(false);
 
   const { username, email, password, repeatPassword } = form;
 
@@ -26,24 +29,25 @@ export const SignUp = () => {
     e.preventDefault();
 
     if (isThereAnEmptyField(username, email, password, repeatPassword)) {
-      errorMessage('All fields must be completed');
+      seterror('All fields must be completed');
       return;
     }
 
     if (password !== repeatPassword) {
-      errorMessage("Passwords don't match");
+      seterror("Passwords don't match");
       return;
     }
 
     setloading(true);
+    seterror(false);
     signup({ ...form })
       .then(data => {
-        console.log(data);
         successMessage('User Registration complete!');
-        // todo send user to login page
+        setform(initialState);
+        navigate('/signin');
       })
       .catch(e => {
-        errorMessage(e);
+        seterror(e.message);
       })
       .finally(() => setloading(false));
   };
@@ -52,6 +56,7 @@ export const SignUp = () => {
     <div className="container-lg">
       <div className="row vh-100 justify-content-center align-items-center">
         <h1 className="text-center">Signup</h1>
+        { error && <Alert message={error} type='danger' /> }
         { loading && <Spinner /> }
         <div className="col-12 col-md-6">
           <form action="" onSubmit={handleSumbit}>
@@ -109,7 +114,7 @@ export const SignUp = () => {
 
             <div className="row">
               <div className="col">
-                <button type="submit" className="btn btn-primary px-3 w-50">
+                <button type="submit" className="btn btn-primary px-3">
                   Sign up
                 </button>
               </div>
