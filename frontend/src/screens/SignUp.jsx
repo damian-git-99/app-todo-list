@@ -54,7 +54,7 @@ export const SignUp = () => {
 
   return (
     <div className="container-lg">
-      <div className="row vh-100 justify-content-center align-items-center">
+      <div style={{ height: '500px' }} className="row justify-content-center align-items-center">
         <h1 className="text-center">Signup</h1>
         { error && <Alert message={error} type='danger' /> }
         { loading && <Spinner /> }
