@@ -1,7 +1,10 @@
 package com.github.damian_git_99.backend.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
+import com.github.damian_git_99.backend.user.role.RoleRepository;
+import com.github.damian_git_99.backend.user.role.RoleService;
 import com.github.damian_git_99.backend.user.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -29,6 +33,12 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+    @MockBean
+    private RoleRepository roleRepository;
+    @MockBean
+    private JWTService jwtService;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
     private final ObjectMapper mapper = new ObjectMapper();
 

@@ -4,24 +4,37 @@ import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
 import com.github.damian_git_99.backend.user.repositories.UserRepository;
+import com.github.damian_git_99.backend.user.role.Role;
+import com.github.damian_git_99.backend.user.role.RoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserServiceImpl implements UserService {
+@Transactional
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleService roleService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     @Override
@@ -33,6 +46,13 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyTakenException("Email is already Taken");
         }
 
+        // todo add specific exception
+        Role role = roleService.findRoleByName("USER")
+                .orElseThrow(() -> {
+                    log.info("ERROR: Role USER not found");
+                    return new RuntimeException("An error occurred on the server");
+                });
+
         String hashedPassword = passwordEncoder.encode(userRequest.getPassword());
 
         User user = User.builder()
@@ -41,8 +61,23 @@ public class UserServiceImpl implements UserService {
                 .email(userRequest.getEmail())
                 .build();
 
+        user.addRole(role);
         log.info("saving new user in the db");
         userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> optionalUser = this.userRepository.findByEmail(email);
+        System.out.println(optionalUser);
+        if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User not found");
+        User user = optionalUser.get();
+        System.out.println(user.getRoles());
+        Collection<? extends GrantedAuthority> authorities = user.getRoles().stream()
+                .map(Role::getName)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 
 }

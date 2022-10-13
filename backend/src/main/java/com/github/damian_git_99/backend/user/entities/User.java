@@ -1,9 +1,13 @@
 package com.github.damian_git_99.backend.user.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.damian_git_99.backend.user.role.Role;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Builder
@@ -23,6 +27,16 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "roles_id"})})
+    @JsonIgnore
+    @ToString.Exclude
+    @Builder.Default
+    private List<Role> roles = new ArrayList<>();
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
 
     @Override
     public boolean equals(Object o) {

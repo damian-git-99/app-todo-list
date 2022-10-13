@@ -4,6 +4,8 @@ import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
 import com.github.damian_git_99.backend.user.repositories.UserRepository;
+import com.github.damian_git_99.backend.user.role.Role;
+import com.github.damian_git_99.backend.user.role.RoleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +33,8 @@ class UserServiceImplTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private RoleService roleService;
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -65,11 +69,12 @@ class UserServiceImplTest {
                 .username("Irving")
                 .email("damian@gmail.com")
                 .password("123456").build();
+        Role role = new Role("USER");
 
         given(userRepository.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.empty());
-
         given(passwordEncoder.encode("123456")).willReturn("hashed password");
+        given(roleService.findRoleByName("USER")).willReturn(Optional.of(role));
 
         userService.signUp(userRequest);
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
@@ -86,11 +91,12 @@ class UserServiceImplTest {
                 .username("Irving")
                 .email("damian@gmail.com")
                 .password("123456").build();
+        Role role = new Role("USER");
 
         given(userRepository.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.empty());
-
         given(passwordEncoder.encode("123456")).willReturn("hashed password");
+        given(roleService.findRoleByName("USER")).willReturn(Optional.of(role));
 
         userService.signUp(userRequest);
 
