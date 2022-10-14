@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { signup } from '../api/UserApi';
+import { UserContext } from '../App';
 import { Alert } from '../components/Alert';
 import { Spinner } from '../components/Spinner';
 import { successMessage } from '../util/messages';
 import { isThereAnEmptyField } from '../util/validations';
 
 export const SignUp = () => {
+  const userContext = useContext(UserContext);
+  const navigate = useNavigate();
   const initialState = {
     username: '',
     email: '',
     password: '',
     repeatPassword: ''
   };
-  const navigate = useNavigate();
   const [form, setform] = useState(initialState);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState(false);
@@ -25,9 +27,9 @@ export const SignUp = () => {
     setform({ ...form, [e.target.name]: value });
   };
 
-  const handleSumbit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log(userContext);
     if (isThereAnEmptyField(username, email, password, repeatPassword)) {
       seterror('All fields must be completed');
       return;
@@ -44,7 +46,7 @@ export const SignUp = () => {
       .then(data => {
         successMessage('User Registration complete!');
         setform(initialState);
-        navigate('/signin');
+        navigate('/login');
       })
       .catch(e => {
         seterror(e.message);
@@ -59,7 +61,7 @@ export const SignUp = () => {
         { error && <Alert message={error} type='danger' /> }
         { loading && <Spinner /> }
         <div className="col-12 col-md-6">
-          <form action="" onSubmit={handleSumbit}>
+          <form action="" onSubmit={handleSubmit}>
             <div className="row mb-4">
               <div className="col-lg-12">
                 <input
@@ -119,7 +121,7 @@ export const SignUp = () => {
                 </button>
               </div>
               <div className="col">
-                <a href="">Ya tengo cuenta</a>
+                <Link to="/login">I already have an account</Link>
               </div>
             </div>
           </form>
