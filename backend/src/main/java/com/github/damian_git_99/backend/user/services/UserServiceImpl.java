@@ -1,5 +1,6 @@
 package com.github.damian_git_99.backend.user.services;
 
+import com.github.damian_git_99.backend.exceptions.InternalServerException;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
@@ -46,11 +47,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new EmailAlreadyTakenException("Email is already Taken");
         }
 
-        // todo add specific exception
         Role role = roleService.findRoleByName("USER")
                 .orElseThrow(() -> {
-                    log.info("ERROR: Role USER not found");
-                    return new RuntimeException("An error occurred on the server");
+                    log.error("ERROR: Role USER not found");
+                    return new InternalServerException("An error occurred on the server");
                 });
 
         String hashedPassword = passwordEncoder.encode(userRequest.getPassword());

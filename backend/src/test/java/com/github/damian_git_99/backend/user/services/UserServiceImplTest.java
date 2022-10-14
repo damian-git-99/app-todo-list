@@ -1,5 +1,6 @@
 package com.github.damian_git_99.backend.user.services;
 
+import com.github.damian_git_99.backend.exceptions.InternalServerException;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
@@ -60,6 +61,23 @@ class UserServiceImplTest {
 
         then(passwordEncoder).should(never()).encode(anyString());
         then(userRepository).should(never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw InternalServerErrorException when role USER is not found")
+    void shouldThrowException(){
+        // todo
+        UserRequest userRequest = UserRequest.builder()
+                .username("Irving")
+                .email("damian@gmail.com")
+                .password("123456").build();
+        Role role = new Role("USER");
+
+        given(userRepository.findByEmail("damian@gmail.com"))
+                .willReturn(Optional.empty());
+        assertThatThrownBy(() -> userService.signUp(userRequest))
+                .isInstanceOf(InternalServerException.class)
+                .hasMessageContaining("An error occurred on the server");
     }
 
     @Test
