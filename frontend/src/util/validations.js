@@ -15,7 +15,6 @@ export const isEmpty = (field) => {
  * @returns The function isThereAnEmptyField is being returned.
  */
 export const isThereAnEmptyField = (...fields) => {
-  console.log(fields);
   for (let i = 0; i < fields.length; i++) {
     if (isEmpty(fields[i])) return true;
   }
