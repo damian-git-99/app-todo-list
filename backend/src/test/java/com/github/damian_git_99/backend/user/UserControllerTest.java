@@ -3,6 +3,7 @@ package com.github.damian_git_99.backend.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
+import com.github.damian_git_99.backend.user.repositories.UserRepository;
 import com.github.damian_git_99.backend.user.role.RoleRepository;
 import com.github.damian_git_99.backend.user.role.RoleService;
 import com.github.damian_git_99.backend.user.services.UserService;
@@ -39,6 +40,8 @@ class UserControllerTest {
     private JWTService jwtService;
     @MockBean
     private PasswordEncoder passwordEncoder;
+    @MockBean
+    private UserRepository userRepository;
 
     private final ObjectMapper mapper = new ObjectMapper();
 

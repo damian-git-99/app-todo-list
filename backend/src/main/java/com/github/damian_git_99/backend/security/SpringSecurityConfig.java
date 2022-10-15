@@ -2,6 +2,7 @@ package com.github.damian_git_99.backend.security;
 
 import com.github.damian_git_99.backend.security.filters.AuthenticationFilter;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
+import com.github.damian_git_99.backend.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +29,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
     @Autowired
-    public SpringSecurityConfig(JWTService jwtService, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
+    public SpringSecurityConfig(JWTService jwtService, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService, UserRepository userRepository) {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**").hasRole("USER")
                 .anyRequest().permitAll();
 
-        http.addFilter(new AuthenticationFilter(this.authenticationManager(), jwtService));
+        http.addFilter(new AuthenticationFilter(this.authenticationManager(), jwtService, userRepository));
     }
 
     @Bean
