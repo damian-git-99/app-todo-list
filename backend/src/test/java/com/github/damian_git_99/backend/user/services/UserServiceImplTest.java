@@ -92,7 +92,7 @@ class UserServiceImplTest {
         given(userRepository.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.empty());
         given(passwordEncoder.encode("123456")).willReturn("hashed password");
-        given(roleService.findRoleByName("USER")).willReturn(Optional.of(role));
+        given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
 
         userService.signUp(userRequest);
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
@@ -114,7 +114,7 @@ class UserServiceImplTest {
         given(userRepository.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.empty());
         given(passwordEncoder.encode("123456")).willReturn("hashed password");
-        given(roleService.findRoleByName("USER")).willReturn(Optional.of(role));
+        given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
 
         userService.signUp(userRequest);
 
