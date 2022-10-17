@@ -1,7 +1,6 @@
 package com.github.damian_git_99.backend.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.damian_git_99.backend.security.exceptions.BadCredentialsException;
 import com.github.damian_git_99.backend.security.filters.dto.UserRequestAuth;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.entities.User;
@@ -12,10 +11,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.validation.ObjectError;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,7 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -76,7 +77,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         User user = userRepository.findByEmail(authResult.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Map<String, Object> payload = new HashMap<>();
-        payload.put("id", user.getId());
+        var authorities = generateAuthoritiesPayload(authResult);
         String token = jwtService.createToken(null, payload);
 
         response.setHeader("Authorization", "Bearer ".concat(token));
@@ -95,6 +96,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         response.getWriter().write(objectMapper.writeValueAsString(map));
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType("application/json");
+    }
+
+    private List<String> generateAuthoritiesPayload(Authentication authResult) {
+        return authResult.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
     }
 
 }
