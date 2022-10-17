@@ -1,6 +1,7 @@
 package com.github.damian_git_99.backend.security;
 
 import com.github.damian_git_99.backend.security.filters.AuthenticationFilter;
+import com.github.damian_git_99.backend.security.filters.AuthorizationFilter;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +52,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
-                .antMatchers("/api/**").hasRole("USER")
-                .anyRequest().permitAll();
+                .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
+                .anyRequest().hasRole("USER");
 
         http.addFilter(new AuthenticationFilter(this.authenticationManager(), jwtService, userRepository));
+        http.addFilterBefore(new AuthorizationFilter(jwtService), AuthenticationFilter.class);
     }
 
     @Bean
@@ -62,7 +64,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://127.0.0.1:5173"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        //config.setAllowCredentials(true);
         config.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -72,10 +73,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(corsConfigurationSource()));
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
     }
-
 
 }
