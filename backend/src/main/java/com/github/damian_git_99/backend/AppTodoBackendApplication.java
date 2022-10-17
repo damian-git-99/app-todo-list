@@ -19,6 +19,6 @@ public class AppTodoBackendApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		roleRepository.save(new Role("USER"));
+		roleRepository.save(new Role("ROLE_USER"));
 	}
 }
