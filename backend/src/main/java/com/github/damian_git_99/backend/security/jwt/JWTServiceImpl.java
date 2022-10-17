@@ -1,6 +1,8 @@
 package com.github.damian_git_99.backend.security.jwt;
 
+import com.github.damian_git_99.backend.security.jwt.exceptions.InvalidJwtTokenException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
@@ -33,12 +35,30 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public boolean validateToken(String header) {
-        return false;
+    public boolean validateToken(String authorizationHeader) {
+        try {
+            var token =
+                    getClaims(authorizationHeader);
+            return true;
+        } catch (JwtException e) {
+            // Token validation failed
+            throw new InvalidJwtTokenException("Expired or invalid JWT token");
+        }
     }
 
     @Override
     public Claims getClaims(String authorizationHeader) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(this.resolveToken(authorizationHeader))
+                .getBody();
+    }
+
+    // remove the Bearer from the token
+    private String resolveToken(String header) {
+        if (header != null && header.startsWith("Bearer "))
+            return header.replace("Bearer ", "");
         return null;
     }
 }
