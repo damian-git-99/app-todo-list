@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new EmailAlreadyTakenException("Email is already Taken");
         }
 
-        Role role = roleService.findRoleByName("USER")
+        Role role = roleService.findRoleByName("ROLE_USER")
                 .orElseThrow(() -> {
                     log.error("ERROR: Role USER not found");
                     return new InternalServerException("An error occurred on the server");
@@ -67,9 +67,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optionalUser = this.userRepository.findByEmail(email);
-        System.out.println(optionalUser);
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User not found");
         User user = optionalUser.get();
         System.out.println(user.getRoles());
