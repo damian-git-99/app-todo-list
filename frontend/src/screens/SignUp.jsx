@@ -1,15 +1,19 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signup } from '../api/UserApi';
-import { UserContext } from '../App';
 import { Alert } from '../components/Alert';
 import { Spinner } from '../components/Spinner';
+import { UserContext } from '../context/ContextProvider';
 import { successMessage } from '../util/messages';
 import { isThereAnEmptyField } from '../util/validations';
 
 export const SignUp = () => {
   const userContext = useContext(UserContext);
   const navigate = useNavigate();
+  if (userContext.isAuthenticated) {
+    navigate('/');
+    return;
+  }
   const initialState = {
     username: '',
     email: '',

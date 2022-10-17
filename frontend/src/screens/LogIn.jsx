@@ -4,15 +4,16 @@ import { Spinner } from '../components/Spinner';
 import { Alert } from '../components/Alert';
 import { isThereAnEmptyField } from '../util/validations';
 import { login } from '../api/UserApi';
-import { UserContext } from '../App';
+import { UserContext } from '../context/ContextProvider';
 
 export const LogIn = () => {
   const userContext = useContext(UserContext);
   const navigate = useNavigate();
-  // if (userContext.isAuthenticated) {
-  //   navigate('/');
-  //   return;
-  // }
+  if (userContext.isAuthenticated) {
+    navigate('/');
+    return;
+  }
+
   const initialState = {
     email: '',
     password: ''
@@ -41,7 +42,7 @@ export const LogIn = () => {
     login({ ...form })
       .then(data => {
         userContext.setUser((state) => {
-          return { ...state, ...data };
+          return { ...state, ...data, isAuthenticated: true };
         });
         navigate('/');
       })
