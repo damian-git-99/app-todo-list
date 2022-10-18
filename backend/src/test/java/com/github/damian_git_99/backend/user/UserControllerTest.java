@@ -1,13 +1,13 @@
 package com.github.damian_git_99.backend.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.damian_git_99.backend.config.WithMockCustomUser;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
+import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.repositories.UserRepository;
 import com.github.damian_git_99.backend.user.role.RoleRepository;
-import com.github.damian_git_99.backend.user.role.RoleService;
 import com.github.damian_git_99.backend.user.services.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,9 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atMostOnce;
-import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -174,6 +177,36 @@ class UserControllerTest {
             requestSignUp(userRequest);
 
             then(userService).should(atMostOnce()).signUp(userRequest);
+        }
+
+
+    }
+
+    @Nested
+    class getUserDetailsTests {
+
+        @Test
+        @DisplayName("It Should return 403 when user is not authorized")
+        void shouldFailWhenTokenIsNotSent() throws Exception {
+            mvc.perform(get("/api/v1/users/info"))
+                    .andExpect(status().isForbidden());
+
+        }
+
+        @Test
+        @DisplayName("It Should return 200 ok when user is authorized")
+        @WithMockCustomUser(id = 1)
+        void shouldSuccess() throws Exception {
+            User user = User.builder()
+                            .username("damian")
+                            .email("damian@gmail.com")
+                            .build();
+
+            given(userService.findById(1L)).willReturn(Optional.of(user));
+
+            mvc.perform(get("/api/v1/users/info"))
+                    .andExpect(status().isOk());
+
         }
 
 
