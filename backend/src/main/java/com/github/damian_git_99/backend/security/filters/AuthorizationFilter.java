@@ -1,6 +1,7 @@
 package com.github.damian_git_99.backend.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.security.jwt.exceptions.InvalidJwtTokenException;
 import io.jsonwebtoken.Claims;
@@ -52,7 +53,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 Collection<? extends GrantedAuthority> authorities = list.stream()
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-                var credentials = new UsernamePasswordAuthenticationToken(id, null, authorities);
+                var user = new AuthenticatedUser(id.longValue());
+                var credentials = new UsernamePasswordAuthenticationToken(user, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(credentials);
             }
             filterChain.doFilter(request, response);

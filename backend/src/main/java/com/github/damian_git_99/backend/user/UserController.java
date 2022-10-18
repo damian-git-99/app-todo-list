@@ -1,5 +1,6 @@
 package com.github.damian_git_99.backend.user;
 
+import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.dto.UserResponse;
 import com.github.damian_git_99.backend.user.entities.User;
@@ -49,8 +50,9 @@ public class UserController {
 
     @GetMapping("/info")
     ResponseEntity<UserResponse> getUserDetails(Authentication authentication) {
-        Integer id = (Integer) authentication.getPrincipal();
-        User user = userService.findById(id.longValue())
+        AuthenticatedUser  auth = (AuthenticatedUser) authentication.getPrincipal();
+
+        User user = userService.findById(auth.getId())
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
         UserResponse userResponse = UserResponse.builder()
