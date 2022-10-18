@@ -37,8 +37,7 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public boolean validateToken(String authorizationHeader) {
         try {
-            var token =
-                    getClaims(authorizationHeader);
+            getClaims(authorizationHeader);
             return true;
         } catch (JwtException e) {
             // Token validation failed
