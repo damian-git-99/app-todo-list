@@ -76,8 +76,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = userRepository.findByEmail(authResult.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         Map<String, Object> payload = new HashMap<>();
         var authorities = generateAuthoritiesPayload(authResult);
+        payload.put("id", user.getId());
+        payload.put("authorities", authorities);
+
         String token = jwtService.createToken(null, payload);
 
         response.setHeader("Authorization", "Bearer ".concat(token));
