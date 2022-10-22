@@ -3,7 +3,6 @@ package com.github.damian_git_99.backend.security.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
-import com.github.damian_git_99.backend.security.jwt.exceptions.InvalidJwtTokenException;
 import io.jsonwebtoken.Claims;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,8 +57,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(credentials);
             }
             filterChain.doFilter(request, response);
-        } catch (InvalidJwtTokenException ex) {
-            System.out.println(ex.getMessage());
+        } catch (Exception ex) {
             SecurityContextHolder.clearContext();
             Map<String, Object> errors = new HashMap<>();
             errors.put("message", ex.getMessage());

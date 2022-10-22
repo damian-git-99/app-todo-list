@@ -1,38 +1,20 @@
 package com.github.damian_git_99.backend.security.filters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.damian_git_99.backend.security.filters.dto.UserRequestAuth;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
-import com.github.damian_git_99.backend.user.UserController;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.repositories.UserRepository;
 import com.github.damian_git_99.backend.user.role.Role;
-import com.github.damian_git_99.backend.user.role.RoleRepository;
-import com.github.damian_git_99.backend.user.role.RoleService;
-import com.github.damian_git_99.backend.user.services.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import javax.servlet.Filter;
 
 import java.util.List;
 import java.util.Optional;
