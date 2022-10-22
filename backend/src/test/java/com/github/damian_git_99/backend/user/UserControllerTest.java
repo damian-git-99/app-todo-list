@@ -1,7 +1,8 @@
 package com.github.damian_git_99.backend.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.damian_git_99.backend.config.WithMockCustomUser;
+import com.github.damian_git_99.backend.util.BaseControllerTest;
+import com.github.damian_git_99.backend.util.WithMockCustomUser;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.entities.User;
@@ -30,21 +31,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
-class UserControllerTest {
+class UserControllerTest extends BaseControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private UserService userService;
-    @MockBean
-    private RoleRepository roleRepository;
-    @MockBean
-    private JWTService jwtService;
-    @MockBean
-    private PasswordEncoder passwordEncoder;
-    @MockBean
-    private UserRepository userRepository;
 
     private final ObjectMapper mapper = new ObjectMapper();
 

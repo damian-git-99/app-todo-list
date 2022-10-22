@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.config;
+package com.github.damian_git_99.backend.util;
 
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
