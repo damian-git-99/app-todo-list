@@ -24,10 +24,18 @@ public class ProjectController {
     }
 
     @PostMapping("")
-    public ResponseEntity createProject(@Valid @RequestBody ProjectRequest projectRequest, Authentication authentication, BindingResult result) {
+    public ResponseEntity<Map<String, Object>> createProject(
+            @Valid @RequestBody ProjectRequest projectRequest
+            , Authentication authentication
+            , BindingResult result) {
+
         // todo refactor this code
         if (result.hasErrors()) {
-            var firstError = result.getFieldErrors().stream().findFirst().orElseThrow();
+            var firstError = result.getFieldErrors()
+                    .stream()
+                    .findFirst()
+                    .orElseThrow();
+
             Map<String, Object> response = new HashMap<>();
             response.put("error", firstError.getDefaultMessage());
 
@@ -35,9 +43,11 @@ public class ProjectController {
                     .badRequest()
                     .body(response);
         }
+
         AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
         projectService.createProject(projectRequest, user.getId());
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .build();
     }
 
