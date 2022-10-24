@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { NavBar } from '../components/NavBar';
 import { UserContext } from '../context/ContextProvider';
 
 export const ProtectedRoutes = () => {
@@ -8,5 +9,10 @@ export const ProtectedRoutes = () => {
   if (!isAuthenticated) {
     return <Navigate to={'/login'} replace />;
   }
-  return <Outlet />;
+  return (
+    <>
+      <NavBar />
+      <Outlet />
+    </>
+  );
 };
