@@ -3,6 +3,7 @@ package com.github.damian_git_99.backend.project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.services.ProjectService;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
+import com.github.damian_git_99.backend.utils.BindingResultUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -10,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -29,19 +29,12 @@ public class ProjectController {
             , Authentication authentication
             , BindingResult result) {
 
-        // todo refactor this code
         if (result.hasErrors()) {
-            var firstError = result.getFieldErrors()
-                    .stream()
-                    .findFirst()
-                    .orElseThrow();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", firstError.getDefaultMessage());
+            var error =  BindingResultUtils.getFirstError(result);
 
             return ResponseEntity
                     .badRequest()
-                    .body(response);
+                    .body(error);
         }
 
         AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
