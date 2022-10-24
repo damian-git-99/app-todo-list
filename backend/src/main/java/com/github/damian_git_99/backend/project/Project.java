@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.user.project;
+package com.github.damian_git_99.backend.project;
 
 import com.github.damian_git_99.backend.user.entities.User;
 import lombok.*;

@@ -1,10 +1,10 @@
-package com.github.damian_git_99.backend.user.project.services;
+package com.github.damian_git_99.backend.project.services;
 
-import com.github.damian_git_99.backend.user.project.Project;
-import com.github.damian_git_99.backend.user.project.dto.ProjectRequest;
+import com.github.damian_git_99.backend.project.Project;
+import com.github.damian_git_99.backend.project.dto.ProjectRequest;
+import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
-import com.github.damian_git_99.backend.user.project.exceptions.ProjectNameAlreadyExists;
 import com.github.damian_git_99.backend.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

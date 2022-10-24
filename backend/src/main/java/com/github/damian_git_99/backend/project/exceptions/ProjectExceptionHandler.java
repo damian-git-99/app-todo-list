@@ -1,6 +1,5 @@
-package com.github.damian_git_99.backend.user.project.exceptions;
+package com.github.damian_git_99.backend.project.exceptions;
 
-import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

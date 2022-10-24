@@ -1,7 +1,7 @@
 package com.github.damian_git_99.backend.user.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.damian_git_99.backend.user.project.Project;
+import com.github.damian_git_99.backend.project.Project;
 import com.github.damian_git_99.backend.user.role.Role;
 import lombok.*;
 import org.hibernate.Hibernate;

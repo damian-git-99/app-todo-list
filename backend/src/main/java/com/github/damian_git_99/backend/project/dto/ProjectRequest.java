@@ -1,6 +1,6 @@
-package com.github.damian_git_99.backend.user.project.dto;
+package com.github.damian_git_99.backend.project.dto;
 
-import com.github.damian_git_99.backend.user.project.Project;
+import com.github.damian_git_99.backend.project.Project;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

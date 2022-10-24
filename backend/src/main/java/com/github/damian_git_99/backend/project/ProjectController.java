@@ -1,7 +1,7 @@
-package com.github.damian_git_99.backend.user.project;
+package com.github.damian_git_99.backend.project;
 
-import com.github.damian_git_99.backend.user.project.dto.ProjectRequest;
-import com.github.damian_git_99.backend.user.project.services.ProjectService;
+import com.github.damian_git_99.backend.project.dto.ProjectRequest;
+import com.github.damian_git_99.backend.project.services.ProjectService;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
