@@ -3,6 +3,7 @@ package com.github.damian_git_99.backend.project.services;
 import com.github.damian_git_99.backend.project.Project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
+import com.github.damian_git_99.backend.project.repositories.ProjectRepository;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
@@ -19,8 +20,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atMostOnce;
 
 @ExtendWith(MockitoExtension.class)
 class ProjectServiceImplTest {
@@ -28,6 +31,8 @@ class ProjectServiceImplTest {
 
     @Mock
     private UserService userService;
+    @Mock
+    ProjectRepository projectRepository;
     @InjectMocks
     private ProjectServiceImpl projectService;
 
@@ -70,6 +75,30 @@ class ProjectServiceImplTest {
                 .isInstanceOf(ProjectNameAlreadyExists.class)
                 .hasMessageContaining("Project name already exists");
 
+    }
+
+    @Test
+    @DisplayName("Should create a project")
+    void shouldCreateProject(){
+        Project project = new Project("project1","description of my project");
+        List<Project> projects = List.of(project);
+        ProjectRequest projectRequest = ProjectRequest.builder()
+                .name("project2")
+                .description("description")
+                .build();
+
+        User user = User.builder()
+                .id(1L)
+                .username("damian")
+                .email("damian@gmial.com")
+                .projects(projects)
+                .build();
+
+        given(userService.findById(1L)).willReturn(Optional.of(user));
+
+        projectService.createProject(projectRequest, 1L);
+
+        then(projectRepository).should(atMostOnce()).save(any());
     }
 
 
