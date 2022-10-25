@@ -3,6 +3,7 @@ package com.github.damian_git_99.backend.project.services;
 import com.github.damian_git_99.backend.project.Project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
+import com.github.damian_git_99.backend.project.repositories.ProjectRepository;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class ProjectServiceImpl implements ProjectService {
 
     private final UserService userService;
+    private final ProjectRepository projectRepository;
 
     @Autowired
-    public ProjectServiceImpl(UserService userService) {
+    public ProjectServiceImpl(UserService userService, ProjectRepository projectRepository) {
         this.userService = userService;
+        this.projectRepository = projectRepository;
     }
 
     @Override
@@ -41,8 +44,9 @@ public class ProjectServiceImpl implements ProjectService {
         project.setName(projectRequest.getName());
         project.setDescription(projectRequest.getDescription());
         project.setCreatedAt(new Date());
+        project.setUser(user);
 
-        user.addProject(project);
+        projectRepository.save(project);
     }
 
 }
