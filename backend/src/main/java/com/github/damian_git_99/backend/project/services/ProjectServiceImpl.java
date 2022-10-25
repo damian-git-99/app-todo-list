@@ -29,7 +29,8 @@ public class ProjectServiceImpl implements ProjectService {
         User user = userService.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
-        Optional<Project> projectOptional = user.getProjects().stream().filter(project -> project.getName().equals(projectRequest.getName()))
+        Optional<Project> projectOptional = user.getProjects().stream()
+                .filter(project -> project.getName().equals(projectRequest.getName()))
                 .findFirst();
 
         if (projectOptional.isPresent()) {

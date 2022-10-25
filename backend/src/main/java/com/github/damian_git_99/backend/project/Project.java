@@ -29,6 +29,11 @@ public class Project {
     private User user;
 
 
+    public Project(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
