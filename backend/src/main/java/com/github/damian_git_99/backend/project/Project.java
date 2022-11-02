@@ -1,5 +1,6 @@
 package com.github.damian_git_99.backend.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.damian_git_99.backend.user.entities.User;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -8,9 +9,11 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@Builder
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
 @Table(name = "projects", uniqueConstraints = {
@@ -27,7 +30,6 @@ public class Project {
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private User user;
-
 
     public Project(String name, String description) {
         this.name = name;
