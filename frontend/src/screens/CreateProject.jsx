@@ -50,7 +50,7 @@ export const CreateProject = () => {
   <div className='container mt-4'>
     <div className="row">
       <div className="col">
-        <button className='btn btn-outline-primary px-4'>Return</button>
+        <button className='btn btn-outline-dark px-4'>Return</button>
       </div>
       <div className="col">
         {error && <Alert message={error} type="danger" />}
@@ -88,7 +88,7 @@ export const CreateProject = () => {
 
             <div className="row">
               <div className="col">
-                <button type="submit" className="btn btn-primary px-3">
+                <button type="submit" className="btn btn-dark px-3">
                   Create Project
                 </button>
               </div>

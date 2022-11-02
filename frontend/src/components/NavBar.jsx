@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { UserContext } from '../context/ContextProvider';
 
 export const NavBar = () => {
   const userContext = useContext(UserContext);
 
   const handleLogout = () => {
-
+    // todo delete info from localstorage
   };
+
   return (
     <nav className="navbar navbar-expand-md bg-light shadow-sm">
       <div className="container-fluid">
@@ -32,6 +34,12 @@ export const NavBar = () => {
                 <li><a className="dropdown-item" href="#">Log out</a></li>
               </ul>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/projects/create-project">Create Project</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/">My Projects</Link>
+            </li>
           </ul>
           <form className="d-flex" role="search">
             <input
@@ -40,7 +48,7 @@ export const NavBar = () => {
               placeholder="Search"
               aria-label="Search"
             />
-            <button className="btn btn-outline-success" type="submit">
+            <button className="btn btn-outline-dark" type="submit">
               Search
             </button>
           </form>
