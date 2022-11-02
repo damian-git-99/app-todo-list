@@ -36,9 +36,6 @@ class UserControllerTest extends BaseControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
-    private UserService userService;
-
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Nested
