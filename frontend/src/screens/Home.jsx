@@ -16,7 +16,7 @@ export const Home = () => {
       .then((data) => {
         setprojects(data);
       })
-      .catch((e) => seterror(e))
+      .catch((e) => seterror(e.message))
       .finally(() => setisLoading(false));
   }, []);
 
