@@ -1,6 +1,7 @@
 package com.github.damian_git_99.backend.user.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.damian_git_99.backend.project.Project;
 import com.github.damian_git_99.backend.user.role.Role;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -33,6 +34,10 @@ public class User {
     @ToString.Exclude
     @Builder.Default
     private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @Builder.Default
+    private List<Project> projects = new ArrayList<>();
 
     public void addRole(Role role) {
         roles.add(role);

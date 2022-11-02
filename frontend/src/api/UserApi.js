@@ -41,9 +41,10 @@ export const userInfo = async (token) => {
     const { data } = await axios.get('http://127.0.0.1:8080/api/v1/users/info', config);
     return data;
   } catch (error) {
-    // handle invalid taken
-    // todo check if token is invalid, and if is invalid then remove token from local storage
-    // localStorage.removeItem('token');
+    const status = error.response.status;
+    if (status === 401) {
+      localStorage.removeItem('token');
+    }
     const message = error?.response?.data?.error || error.message;
     const err = new Error(message);
     throw err;

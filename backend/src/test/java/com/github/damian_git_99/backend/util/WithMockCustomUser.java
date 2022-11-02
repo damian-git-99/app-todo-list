@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.config;
+package com.github.damian_git_99.backend.util;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 

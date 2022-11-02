@@ -11,9 +11,9 @@ export const errorMessage = (message) => {
 
 export const successMessage = (message) => {
   Swal.fire({
-    position: 'center',
     icon: 'success',
-    title: message,
+    title: '',
+    text: message,
     showConfirmButton: false,
     timer: 1500
   });

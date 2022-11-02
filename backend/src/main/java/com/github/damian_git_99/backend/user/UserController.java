@@ -6,6 +6,7 @@ import com.github.damian_git_99.backend.user.dto.UserResponse;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
+import com.github.damian_git_99.backend.utils.BindingResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -32,13 +32,11 @@ public class UserController {
     ResponseEntity<Map<String, Object>> signUp(@RequestBody @Valid UserRequest request
             , BindingResult result) {
         if (result.hasErrors()) {
-            var firstError = result.getFieldErrors().stream().findFirst().orElseThrow();
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", firstError.getDefaultMessage());
+            var error =  BindingResultUtils.getFirstError(result);
 
             return ResponseEntity
                     .badRequest()
-                    .body(response);
+                    .body(error);
         }
 
         userService.signUp(request);
