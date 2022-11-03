@@ -42,7 +42,7 @@ public class ProjectController {
             , BindingResult result) {
 
         if (result.hasErrors()) {
-            var error = BindingResultUtils.getFirstError(result);
+            Map<String, Object> error = BindingResultUtils.getFirstError(result);
 
             return ResponseEntity
                     .badRequest()
@@ -59,13 +59,19 @@ public class ProjectController {
     @GetMapping("")
     public List<ProjectResponse> findAllProjectByUser(Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
-
         User user = userService.findById(authenticatedUser.getId())
                 .orElseThrow(() -> new UserNotFoundException("User Not Found Exception"));
 
         return user.getProjects().stream()
                 .map(projectConverter::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public ProjectResponse findProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
+        AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
+        Project project = projectService.findProjectById(id, authenticatedUser);
+        return projectConverter.toDto(project);
     }
 
 

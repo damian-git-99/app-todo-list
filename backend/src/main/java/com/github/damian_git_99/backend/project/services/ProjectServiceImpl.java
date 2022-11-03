@@ -2,8 +2,11 @@ package com.github.damian_git_99.backend.project.services;
 
 import com.github.damian_git_99.backend.project.Project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
+import com.github.damian_git_99.backend.project.exceptions.ForbiddenProjectException;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
+import com.github.damian_git_99.backend.project.exceptions.ProjectNotFoundException;
 import com.github.damian_git_99.backend.project.repositories.ProjectRepository;
+import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
@@ -47,6 +50,21 @@ public class ProjectServiceImpl implements ProjectService {
         project.setUser(user);
 
         projectRepository.save(project);
+    }
+
+    @Override
+    public Project findProjectById(Long projectId, AuthenticatedUser authenticatedUser) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
+
+        boolean projectBelongsToTheAuthenticatedUser = project
+                .getUser().getId().equals(authenticatedUser.getId());
+
+        if (!projectBelongsToTheAuthenticatedUser) {
+            throw new ForbiddenProjectException("Project does not belong to the authenticated user");
+        }
+
+        return project;
     }
 
 }
