@@ -1,7 +1,7 @@
 package com.github.damian_git_99.backend.util;
 
 import com.github.damian_git_99.backend.security.jwt.JWTService;
-import com.github.damian_git_99.backend.user.repositories.UserRepository;
+import com.github.damian_git_99.backend.user.daos.UserDao;
 import com.github.damian_git_99.backend.user.role.RoleRepository;
 import com.github.damian_git_99.backend.user.services.UserService;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,7 +16,7 @@ public class BaseControllerTest {
     @MockBean
     protected PasswordEncoder passwordEncoder;
     @MockBean
-    protected UserRepository userRepository;
+    protected UserDao userDao;
     @MockBean
     protected UserService userService;
 

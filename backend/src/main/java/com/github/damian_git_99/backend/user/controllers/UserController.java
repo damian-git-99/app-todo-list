@@ -1,9 +1,9 @@
-package com.github.damian_git_99.backend.user;
+package com.github.damian_git_99.backend.user.controllers;
 
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.dto.UserResponse;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import com.github.damian_git_99.backend.utils.BindingResultUtils;

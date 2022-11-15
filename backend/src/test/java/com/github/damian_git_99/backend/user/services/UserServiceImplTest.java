@@ -2,9 +2,9 @@ package com.github.damian_git_99.backend.user.services;
 
 import com.github.damian_git_99.backend.exceptions.InternalServerException;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
-import com.github.damian_git_99.backend.user.repositories.UserRepository;
+import com.github.damian_git_99.backend.user.daos.UserDao;
 import com.github.damian_git_99.backend.user.role.Role;
 import com.github.damian_git_99.backend.user.role.RoleService;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +32,7 @@ class UserServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private UserRepository userRepository;
+    private UserDao userDao;
     @Mock
     private RoleService roleService;
     @InjectMocks
@@ -52,7 +51,7 @@ class UserServiceImplTest {
                 .email("damian@gmail.com")
                 .password("123456").build();
 
-        given(userRepository.findByEmail("damian@gmail.com"))
+        given(userDao.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.of(user));
 
         assertThatThrownBy(() -> userService.signUp(userRequest))
@@ -60,7 +59,7 @@ class UserServiceImplTest {
                 .hasMessageContaining("Email is already Taken");
 
         then(passwordEncoder).should(never()).encode(anyString());
-        then(userRepository).should(never()).save(any());
+        then(userDao).should(never()).save(any());
     }
 
     @Test
@@ -73,7 +72,7 @@ class UserServiceImplTest {
                 .password("123456").build();
         Role role = new Role("USER");
 
-        given(userRepository.findByEmail("damian@gmail.com"))
+        given(userDao.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.empty());
         assertThatThrownBy(() -> userService.signUp(userRequest))
                 .isInstanceOf(InternalServerException.class)
@@ -89,7 +88,7 @@ class UserServiceImplTest {
                 .password("123456").build();
         Role role = new Role("USER");
 
-        given(userRepository.findByEmail("damian@gmail.com"))
+        given(userDao.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.empty());
         given(passwordEncoder.encode("123456")).willReturn("hashed password");
         given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
@@ -97,7 +96,7 @@ class UserServiceImplTest {
         userService.signUp(userRequest);
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
 
-        verify(userRepository).save(captor.capture());
+        verify(userDao).save(captor.capture());
         then(passwordEncoder).should(atMostOnce()).encode("123456");
         assertThat(captor.getValue().getPassword()).isEqualTo("hashed password");
     }
@@ -111,14 +110,14 @@ class UserServiceImplTest {
                 .password("123456").build();
         Role role = new Role("USER");
 
-        given(userRepository.findByEmail("damian@gmail.com"))
+        given(userDao.findByEmail("damian@gmail.com"))
                 .willReturn(Optional.empty());
         given(passwordEncoder.encode("123456")).willReturn("hashed password");
         given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
 
         userService.signUp(userRequest);
 
-        then(userRepository).should(atMostOnce()).save(any());
+        then(userDao).should(atMostOnce()).save(any());
 
     }
 

@@ -1,5 +1,7 @@
 package com.github.damian_git_99.backend.project;
 
+import com.github.damian_git_99.backend.project.models.Project;
+
 import java.util.Date;
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.github.damian_git_99.backend.project.dto;
 
-import com.github.damian_git_99.backend.project.Project;
+import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.utils.AbstractConverter;
 
 public class ProjectDtoConverter implements AbstractConverter<Project, ProjectResponse> {

@@ -1,10 +1,12 @@
 package com.github.damian_git_99.backend.project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.damian_git_99.backend.project.controllers.ProjectController;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
+import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.services.ProjectService;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.util.BaseControllerTest;
 import com.github.damian_git_99.backend.util.WithMockCustomUser;
 import org.junit.jupiter.api.DisplayName;
