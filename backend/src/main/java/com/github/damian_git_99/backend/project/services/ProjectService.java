@@ -8,5 +8,6 @@ public interface ProjectService {
 
     void createProject(ProjectRequest projectRequest, Long userId);
     Project findProjectById(Long projectId, AuthenticatedUser authenticatedUser);
+    void deleteProjectById(Long projectId, AuthenticatedUser authenticatedUser);
 
 }
