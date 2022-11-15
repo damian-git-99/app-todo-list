@@ -1,7 +1,7 @@
 package com.github.damian_git_99.backend.user.services;
 
 import com.github.damian_git_99.backend.user.dto.UserRequest;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 
 import java.util.Optional;
 

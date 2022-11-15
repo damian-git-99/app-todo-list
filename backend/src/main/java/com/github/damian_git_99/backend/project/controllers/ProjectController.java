@@ -1,11 +1,12 @@
-package com.github.damian_git_99.backend.project;
+package com.github.damian_git_99.backend.project.controllers;
 
 import com.github.damian_git_99.backend.project.dto.ProjectDtoConverter;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.dto.ProjectResponse;
+import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.services.ProjectService;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import com.github.damian_git_99.backend.utils.BindingResultUtils;

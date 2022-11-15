@@ -1,6 +1,6 @@
-package com.github.damian_git_99.backend.project;
+package com.github.damian_git_99.backend.project.models;
 
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;

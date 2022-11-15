@@ -1,14 +1,14 @@
 package com.github.damian_git_99.backend.project.services;
 
 import com.github.damian_git_99.backend.project.LoadData;
-import com.github.damian_git_99.backend.project.Project;
+import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.exceptions.ForbiddenProjectException;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNotFoundException;
-import com.github.damian_git_99.backend.project.repositories.ProjectRepository;
+import com.github.damian_git_99.backend.project.daos.ProjectDao;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -38,7 +37,7 @@ class ProjectServiceImplTest {
     @Mock
     private UserService userService;
     @Mock
-    ProjectRepository projectRepository;
+    ProjectDao projectDao;
     @InjectMocks
     private ProjectServiceImpl projectService;
 
@@ -104,7 +103,7 @@ class ProjectServiceImplTest {
 
         projectService.createProject(projectRequest, 1L);
 
-        then(projectRepository).should(atMostOnce()).save(any());
+        then(projectDao).should(atMostOnce()).save(any());
     }
 
     @Nested
@@ -115,11 +114,11 @@ class ProjectServiceImplTest {
         void shouldThrowProjectNotFound() {
             AuthenticatedUser authenticatedUser = new AuthenticatedUser(1L);
 
-            given(projectRepository.findById(1L)).willReturn(Optional.empty());
+            given(projectDao.findById(1L)).willReturn(Optional.empty());
 
             assertThatThrownBy(() -> projectService.findProjectById(1L, authenticatedUser))
                     .isInstanceOf(ProjectNotFoundException.class);
-            then(projectRepository).should(atLeastOnce()).findById(1L);
+            then(projectDao).should(atLeastOnce()).findById(1L);
         }
 
         @Test
@@ -136,12 +135,12 @@ class ProjectServiceImplTest {
 
             project.setUser(user);
 
-            given(projectRepository.findById(1L)).willReturn(Optional.of(project));
+            given(projectDao.findById(1L)).willReturn(Optional.of(project));
 
             assertThatThrownBy(() -> projectService.findProjectById(1L, authenticatedUser))
                     .isInstanceOf(ForbiddenProjectException.class);
 
-            then(projectRepository).should(atLeastOnce()).findById(1L);
+            then(projectDao).should(atLeastOnce()).findById(1L);
         }
 
         @Test
@@ -158,7 +157,7 @@ class ProjectServiceImplTest {
 
             project.setUser(user);
 
-            given(projectRepository.findById(1L)).willReturn(Optional.of(project));
+            given(projectDao.findById(1L)).willReturn(Optional.of(project));
 
             Project project1 = projectService.findProjectById(1L, authenticatedUser);
 

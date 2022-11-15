@@ -2,9 +2,9 @@ package com.github.damian_git_99.backend.user.services;
 
 import com.github.damian_git_99.backend.exceptions.InternalServerException;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
-import com.github.damian_git_99.backend.user.repositories.UserRepository;
+import com.github.damian_git_99.backend.user.daos.UserDao;
 import com.github.damian_git_99.backend.user.role.Role;
 import com.github.damian_git_99.backend.user.role.RoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,19 +28,19 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final UserDao userDao;
     private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleService roleService) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserDao userDao, RoleService roleService) {
         this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
+        this.userDao = userDao;
         this.roleService = roleService;
     }
 
     @Override
     public void signUp(UserRequest userRequest) {
-        Optional<User> userExists = userRepository.findByEmail(userRequest.getEmail());
+        Optional<User> userExists = userDao.findByEmail(userRequest.getEmail());
 
         if (userExists.isPresent()) {
             log.info("Email is already Taken: " + userRequest.getEmail());
@@ -63,17 +63,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.addRole(role);
         log.info("saving new user in the db");
-        userRepository.save(user);
+        userDao.save(user);
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+        return userDao.findById(id);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> optionalUser = this.userRepository.findByEmail(email);
+        Optional<User> optionalUser = this.userDao.findByEmail(email);
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User not found");
         User user = optionalUser.get();
         System.out.println(user.getRoles());
