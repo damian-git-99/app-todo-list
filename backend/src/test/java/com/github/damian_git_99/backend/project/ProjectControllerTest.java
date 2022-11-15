@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -150,6 +151,24 @@ class ProjectControllerTest extends BaseControllerTest {
                     .andExpect(jsonPath("$.name").exists())
                     .andExpect(jsonPath("$.description").exists())
                     .andExpect(jsonPath("$.createdAt").exists());
+        }
+
+
+    }
+
+    @Nested
+    class DeleteProjectByIdTests {
+
+        @Test
+        @DisplayName("Should return 200 ok when project is deleted successfully")
+        @WithMockCustomUser(id = 1L)
+        void shouldReturnProject() throws Exception {
+            doNothing()
+                    .when(projectService)
+                    .deleteProjectById(isA(Long.class), isA(AuthenticatedUser.class));
+
+            mvc.perform(delete("/api/v1/projects/1"))
+                    .andExpect(status().isOk());
         }
 
 
