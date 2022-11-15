@@ -1,13 +1,18 @@
 package com.github.damian_git_99.backend.project.services;
 
+import com.github.damian_git_99.backend.project.LoadData;
 import com.github.damian_git_99.backend.project.Project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
+import com.github.damian_git_99.backend.project.exceptions.ForbiddenProjectException;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
+import com.github.damian_git_99.backend.project.exceptions.ProjectNotFoundException;
 import com.github.damian_git_99.backend.project.repositories.ProjectRepository;
+import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMostOnce;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,8 +60,8 @@ class ProjectServiceImplTest {
 
     @Test
     @DisplayName("Should Throw ProjectNameAlreadyExists exception")
-    void shouldThrowProjectNameAlreadyExists(){
-        Project project = new Project("project1","description of my project");
+    void shouldThrowProjectNameAlreadyExists() {
+        Project project = new Project("project1", "description of my project");
         List<Project> projects = List.of(project);
         ProjectRequest projectRequest = ProjectRequest.builder()
                 .name("project1")
@@ -79,8 +85,8 @@ class ProjectServiceImplTest {
 
     @Test
     @DisplayName("Should create a project")
-    void shouldCreateProject(){
-        Project project = new Project("project1","description of my project");
+    void shouldCreateProject() {
+        Project project = new Project("project1", "description of my project");
         List<Project> projects = List.of(project);
         ProjectRequest projectRequest = ProjectRequest.builder()
                 .name("project2")
@@ -99,6 +105,66 @@ class ProjectServiceImplTest {
         projectService.createProject(projectRequest, 1L);
 
         then(projectRepository).should(atMostOnce()).save(any());
+    }
+
+    @Nested
+    class findProjectByIdTests {
+
+        @Test
+        @DisplayName("Should Throw Project Not Found when project does not exist")
+        void shouldThrowProjectNotFound() {
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(1L);
+
+            given(projectRepository.findById(1L)).willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> projectService.findProjectById(1L, authenticatedUser))
+                    .isInstanceOf(ProjectNotFoundException.class);
+            then(projectRepository).should(atLeastOnce()).findById(1L);
+        }
+
+        @Test
+        @DisplayName("Should Throw Forbidden Project Exception when project does not belong to the authenticated user")
+        void shouldThrowForbiddenProjectException() {
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(2L);
+            Project project = LoadData.LoadProject();
+            project.setId(1L);
+
+            User user = User.builder()
+                    .id(1L)
+                    .username("damian@gmail.com")
+                    .build();
+
+            project.setUser(user);
+
+            given(projectRepository.findById(1L)).willReturn(Optional.of(project));
+
+            assertThatThrownBy(() -> projectService.findProjectById(1L, authenticatedUser))
+                    .isInstanceOf(ForbiddenProjectException.class);
+
+            then(projectRepository).should(atLeastOnce()).findById(1L);
+        }
+
+        @Test
+        @DisplayName("Should return project when project belong to the authenticated user")
+        void shouldReturnProject() {
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(1L);
+            Project project = LoadData.LoadProject();
+            project.setId(1L);
+
+            User user = User.builder()
+                    .id(1L)
+                    .username("damian@gmail.com")
+                    .build();
+
+            project.setUser(user);
+
+            given(projectRepository.findById(1L)).willReturn(Optional.of(project));
+
+            Project project1 = projectService.findProjectById(1L, authenticatedUser);
+
+            assertThat(project1).isNotNull();
+        }
+
     }
 
 

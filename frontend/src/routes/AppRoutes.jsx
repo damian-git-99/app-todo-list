@@ -4,6 +4,7 @@ import { CreateProject } from '../screens/CreateProject';
 import { ErrorPage } from '../screens/ErrorPage';
 import { Home } from '../screens/Home';
 import { LogIn } from '../screens/LogIn';
+import { ProjectDetails } from '../screens/ProjectDetails';
 import { SignUp } from '../screens/SignUp';
 import { ProtectedRoutes } from './ProtectedRoutes';
 
@@ -17,6 +18,7 @@ export const AppRoutes = () => {
       <Route element={<ProtectedRoutes />}>
         <Route path='/' element={<Home/>} />
         <Route path='/projects/create-project' element={<CreateProject />} />
+        <Route path='/projects/:id' element={<ProjectDetails />} />
       </Route>
     </Routes>
     </>

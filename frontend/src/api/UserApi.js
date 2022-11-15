@@ -42,7 +42,7 @@ export const userInfo = async (token) => {
     return data;
   } catch (error) {
     const status = error.response.status;
-    if (status === 401) {
+    if (status === 401 || status === 404) {
       localStorage.removeItem('token');
     }
     const message = error?.response?.data?.error || error.message;
