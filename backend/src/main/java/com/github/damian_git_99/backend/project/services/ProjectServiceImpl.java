@@ -67,4 +67,19 @@ public class ProjectServiceImpl implements ProjectService {
         return project;
     }
 
+    @Override
+    public void deleteProjectById(Long projectId, AuthenticatedUser authenticatedUser) {
+        Project project = projectDao.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
+
+        boolean projectBelongsToTheAuthenticatedUser = project
+                .getUser().getId().equals(authenticatedUser.getId());
+
+        if (!projectBelongsToTheAuthenticatedUser) {
+            throw new ForbiddenProjectException("Project does not belong to the authenticated user");
+        }
+
+        projectDao.delete(project);
+    }
+
 }

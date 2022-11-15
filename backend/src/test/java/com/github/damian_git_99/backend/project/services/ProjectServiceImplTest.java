@@ -27,8 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProjectServiceImplTest {
@@ -164,6 +163,61 @@ class ProjectServiceImplTest {
             assertThat(project1).isNotNull();
         }
 
+    }
+
+    @Nested
+    class DeleteProjectByIdTests {
+
+        @Test
+        @DisplayName("Should throw ProjectNotFoundException")
+        void shouldThrowProjectNotFound() {
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(1L);
+            given(projectDao.findById(1L)).willReturn(Optional.empty());
+            assertThatThrownBy(() -> projectService.deleteProjectById(1L, authenticatedUser))
+                    .isInstanceOf(ProjectNotFoundException.class)
+                    .hasMessageContaining("Project Not Found");
+
+            then(projectDao).should(never()).delete(any());
+        }
+
+        @Test
+        @DisplayName("Should throw ForbiddenProjectException when project does not belong to the authenticated user")
+        void shouldThrowForbiddenProjectException() {
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(1L);
+            Project project = LoadData.LoadProject();
+            User user = User.builder()
+                    .id(2L)
+                    .username("damian@gmail.com")
+                    .build();
+
+            project.setUser(user);
+
+            given(projectDao.findById(1L)).willReturn(Optional.of(project));
+
+            assertThatThrownBy(() -> projectService.deleteProjectById(1L, authenticatedUser))
+                    .isInstanceOf(ForbiddenProjectException.class)
+                    .hasMessageContaining("Project does not belong to the authenticated user");
+
+            then(projectDao).should(never()).delete(any());
+        }
+
+        @Test
+        @DisplayName("Should delete the project")
+        void shouldDeleteTheProject() {
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(1L);
+            Project project = LoadData.LoadProject();
+            User user = User.builder()
+                    .id(1L)
+                    .username("damian@gmail.com")
+                    .build();
+
+            project.setUser(user);
+
+            given(projectDao.findById(1L)).willReturn(Optional.of(project));
+
+            projectService.deleteProjectById(1L, authenticatedUser);
+            then(projectDao).should(atLeastOnce()).delete(project);
+        }
     }
 
 
