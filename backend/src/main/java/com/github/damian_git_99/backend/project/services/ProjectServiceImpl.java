@@ -6,7 +6,7 @@ import com.github.damian_git_99.backend.project.exceptions.ForbiddenProjectExcep
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNotFoundException;
 import com.github.damian_git_99.backend.project.daos.ProjectDao;
-import com.github.damian_git_99.backend.security.AuthenticatedUser;
+import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;

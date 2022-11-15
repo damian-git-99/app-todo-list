@@ -2,7 +2,7 @@ package com.github.damian_git_99.backend.project.services;
 
 import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
-import com.github.damian_git_99.backend.security.AuthenticatedUser;
+import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
 
 public interface ProjectService {
 

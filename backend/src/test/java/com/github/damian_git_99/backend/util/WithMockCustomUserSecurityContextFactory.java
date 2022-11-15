@@ -1,6 +1,6 @@
 package com.github.damian_git_99.backend.util;
 
-import com.github.damian_git_99.backend.security.AuthenticatedUser;
+import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

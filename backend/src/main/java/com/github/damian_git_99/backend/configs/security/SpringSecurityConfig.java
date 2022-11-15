@@ -1,8 +1,8 @@
-package com.github.damian_git_99.backend.security;
+package com.github.damian_git_99.backend.configs.security;
 
-import com.github.damian_git_99.backend.security.filters.AuthenticationFilter;
-import com.github.damian_git_99.backend.security.filters.AuthorizationFilter;
-import com.github.damian_git_99.backend.security.jwt.JWTService;
+import com.github.damian_git_99.backend.configs.security.filters.AuthenticationFilter;
+import com.github.damian_git_99.backend.configs.security.filters.AuthorizationFilter;
+import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.daos.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

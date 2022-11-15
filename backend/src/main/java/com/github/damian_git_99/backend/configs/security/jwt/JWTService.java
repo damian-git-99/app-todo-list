@@ -1,6 +1,6 @@
-package com.github.damian_git_99.backend.security.jwt;
+package com.github.damian_git_99.backend.configs.security.jwt;
 
-import com.github.damian_git_99.backend.security.jwt.exceptions.InvalidJwtTokenException;
+import com.github.damian_git_99.backend.configs.security.jwt.exceptions.InvalidJwtTokenException;
 
 import java.util.Map;
 

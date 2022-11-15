@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.security;
+package com.github.damian_git_99.backend.configs.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
