@@ -2,7 +2,7 @@ package com.github.damian_git_99.backend.user.services;
 
 import com.github.damian_git_99.backend.exceptions.InternalServerException;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
 import com.github.damian_git_99.backend.user.daos.UserDao;
 import com.github.damian_git_99.backend.user.role.Role;

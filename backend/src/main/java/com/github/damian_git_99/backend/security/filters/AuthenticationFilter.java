@@ -3,7 +3,7 @@ package com.github.damian_git_99.backend.security.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.damian_git_99.backend.security.filters.dto.UserRequestAuth;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.daos.UserDao;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;

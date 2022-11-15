@@ -1,14 +1,14 @@
 package com.github.damian_git_99.backend.project.services;
 
 import com.github.damian_git_99.backend.project.LoadData;
-import com.github.damian_git_99.backend.project.Project;
+import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.exceptions.ForbiddenProjectException;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNotFoundException;
 import com.github.damian_git_99.backend.project.daos.ProjectDao;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
-import com.github.damian_git_99.backend.user.entities.User;
+import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import org.junit.jupiter.api.DisplayName;
