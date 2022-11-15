@@ -21,10 +21,11 @@ export const Home = () => {
   }, []);
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 pb-2">
       <h1 className='text-center'>My Projects</h1>
       { isLoading && <Spinner />}
       {error && <Alert message={error} type="danger" />}
+      { projects && projects.length === 0 ? <Alert message="you don't have any project ..." type='dark' /> : null }
       <div className="row mt-4">
           {projects.map((p) => (
             <Card key={p.id} project={p} />
