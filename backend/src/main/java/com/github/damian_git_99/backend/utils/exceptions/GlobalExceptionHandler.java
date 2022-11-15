@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.exceptions;
+package com.github.damian_git_99.backend.utils.exceptions;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

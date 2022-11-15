@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.exceptions;
+package com.github.damian_git_99.backend.utils.exceptions;
 
 public class InternalServerException extends RuntimeException {
     public InternalServerException(String message) {
