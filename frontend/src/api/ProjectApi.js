@@ -33,3 +33,20 @@ export const findAllprojects = async (token) => {
     throw err;
   }
 };
+
+export const findProjectById = async (token, id) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  };
+  try {
+    const { data } = await axios.get(`http://127.0.0.1:8080/api/v1/projects/${id}`, config);
+    return data;
+  } catch (error) {
+    const message = error?.response?.data?.error || error.message;
+    const err = new Error(message);
+    throw err;
+  }
+};
