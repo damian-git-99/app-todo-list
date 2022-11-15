@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.damian_git_99.backend.security.filters.dto.UserRequestAuth;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.entities.User;
-import com.github.damian_git_99.backend.user.repositories.UserRepository;
+import com.github.damian_git_99.backend.user.daos.UserDao;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,12 +31,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final ObjectMapper objectMapper;
-    private final UserRepository userRepository;
+    private final UserDao userDao;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService, UserRepository userRepository) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService, UserDao userDao) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
-        this.userRepository = userRepository;
+        this.userDao = userDao;
         this.objectMapper = new ObjectMapper();
         setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/v1/auth", HttpMethod.POST.name()));
     }
@@ -74,7 +74,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        User user = userRepository.findByEmail(authResult.getName())
+        User user = userDao.findByEmail(authResult.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Map<String, Object> payload = new HashMap<>();

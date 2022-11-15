@@ -5,7 +5,7 @@ import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.exceptions.ForbiddenProjectException;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNotFoundException;
-import com.github.damian_git_99.backend.project.repositories.ProjectRepository;
+import com.github.damian_git_99.backend.project.daos.ProjectDao;
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.entities.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
@@ -22,12 +22,12 @@ import java.util.Optional;
 public class ProjectServiceImpl implements ProjectService {
 
     private final UserService userService;
-    private final ProjectRepository projectRepository;
+    private final ProjectDao projectDao;
 
     @Autowired
-    public ProjectServiceImpl(UserService userService, ProjectRepository projectRepository) {
+    public ProjectServiceImpl(UserService userService, ProjectDao projectDao) {
         this.userService = userService;
-        this.projectRepository = projectRepository;
+        this.projectDao = projectDao;
     }
 
     @Override
@@ -49,12 +49,12 @@ public class ProjectServiceImpl implements ProjectService {
         project.setCreatedAt(new Date());
         project.setUser(user);
 
-        projectRepository.save(project);
+        projectDao.save(project);
     }
 
     @Override
     public Project findProjectById(Long projectId, AuthenticatedUser authenticatedUser) {
-        Project project = projectRepository.findById(projectId)
+        Project project = projectDao.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
 
         boolean projectBelongsToTheAuthenticatedUser = project

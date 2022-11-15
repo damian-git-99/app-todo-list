@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.damian_git_99.backend.security.filters.dto.UserRequestAuth;
 import com.github.damian_git_99.backend.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.entities.User;
-import com.github.damian_git_99.backend.user.repositories.UserRepository;
+import com.github.damian_git_99.backend.user.daos.UserDao;
 import com.github.damian_git_99.backend.user.role.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,10 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,7 +35,7 @@ class AuthenticationFilterTest {
     @MockBean
     PasswordEncoder passwordEncoder;
     @MockBean
-    UserRepository userRepository;
+    UserDao userDao;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -76,7 +74,7 @@ class AuthenticationFilterTest {
         user.setPassword("1234");
         user.setRoles(roles);
 
-        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(userDao.findByEmail(any())).willReturn(Optional.of(user));
         given(passwordEncoder.matches("1234", "12345")).willReturn(false);
 
         UserRequestAuth auth = new UserRequestAuth("damian@gmail.com", "12345");
@@ -98,7 +96,7 @@ class AuthenticationFilterTest {
         user.setPassword("1234");
         user.setRoles(roles);
 
-        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(userDao.findByEmail(any())).willReturn(Optional.of(user));
         given(passwordEncoder.matches("1234", "1234")).willReturn(true);
         given(jwtService.createToken(any(), any())).willReturn("generated token");
 
@@ -120,7 +118,7 @@ class AuthenticationFilterTest {
         user.setPassword("1234");
         user.setRoles(roles);
 
-        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(userDao.findByEmail(any())).willReturn(Optional.of(user));
         given(passwordEncoder.matches("1234", "1234")).willReturn(true);
         given(jwtService.createToken(any(), any())).willReturn("generated token");
 
