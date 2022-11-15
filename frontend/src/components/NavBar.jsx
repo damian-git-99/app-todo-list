@@ -1,12 +1,17 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/ContextProvider';
 
 export const NavBar = () => {
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
 
   const handleLogout = () => {
-    // todo delete info from localstorage
+    userContext.setUser((state) => {
+      return { ...state, isAuthenticated: false, email: '', username: '', token: undefined };
+    });
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
@@ -31,7 +36,7 @@ export const NavBar = () => {
               </a>
               <ul className="dropdown-menu">
                 <li><a className="dropdown-item" href="#">Profile</a></li>
-                <li><a className="dropdown-item" href="#">Log out</a></li>
+                <li><button onClick={handleLogout} className='dropdown-item'>Log out</button></li>
               </ul>
             </li>
             <li className="nav-item">
