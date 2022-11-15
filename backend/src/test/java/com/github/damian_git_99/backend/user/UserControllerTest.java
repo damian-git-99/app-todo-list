@@ -1,6 +1,7 @@
 package com.github.damian_git_99.backend.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.damian_git_99.backend.user.controllers.UserController;
 import com.github.damian_git_99.backend.util.BaseControllerTest;
 import com.github.damian_git_99.backend.util.WithMockCustomUser;
 import com.github.damian_git_99.backend.user.dto.UserRequest;

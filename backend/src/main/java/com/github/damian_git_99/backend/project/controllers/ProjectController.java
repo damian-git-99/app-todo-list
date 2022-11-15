@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.project;
+package com.github.damian_git_99.backend.project.controllers;
 
 import com.github.damian_git_99.backend.project.dto.ProjectDtoConverter;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;

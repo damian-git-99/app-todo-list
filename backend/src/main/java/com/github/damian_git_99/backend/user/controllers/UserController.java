@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.user;
+package com.github.damian_git_99.backend.user.controllers;
 
 import com.github.damian_git_99.backend.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
