@@ -75,7 +75,7 @@ public class ProjectController {
         return projectConverter.toDto(project);
     }
 
-    @DeleteMapping("/{id]")
+    @DeleteMapping("/{id}")
     public void deleteProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
         projectService.deleteProjectById(id, authenticatedUser);
