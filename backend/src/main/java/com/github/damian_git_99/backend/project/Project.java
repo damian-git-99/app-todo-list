@@ -1,9 +1,9 @@
 package com.github.damian_git_99.backend.project;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.damian_git_99.backend.user.entities.User;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,6 +25,7 @@ public class Project {
     private Long id;
     private String name;
     private String description;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
