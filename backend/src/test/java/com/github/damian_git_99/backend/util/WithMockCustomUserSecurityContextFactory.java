@@ -23,6 +23,7 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
         var auth = new AuthenticatedUser(annotation.id());
         var token = new UsernamePasswordAuthenticationToken(auth, annotation.password(), roles);
         context.setAuthentication(token);
+        System.out.println(context);
         return context;
     }
 

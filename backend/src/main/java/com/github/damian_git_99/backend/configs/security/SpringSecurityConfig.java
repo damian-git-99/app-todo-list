@@ -8,12 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,38 +31,43 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class SpringSecurityConfig {
 
     private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
-    private final UserDao userDao;
+    private final MyCustomDsl customDsl;
+
     @Autowired
     public SpringSecurityConfig(JWTService jwtService, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService, UserDao userDao) {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
-        this.userDao = userDao;
+        this.customDsl = new MyCustomDsl(jwtService, userDao);
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
-
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
                 .anyRequest().hasRole("USER");
-
-        http.addFilter(new AuthenticationFilter(this.authenticationManager(), jwtService, userDao));
+        // http.addFilter(new AuthenticationFilter(auth, jwtService, userDao));
+        http.apply(customDsl);
         http.addFilterBefore(new AuthorizationFilter(jwtService), AuthenticationFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
     }
 
     @Bean

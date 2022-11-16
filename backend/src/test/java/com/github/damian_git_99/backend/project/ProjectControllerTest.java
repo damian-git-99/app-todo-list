@@ -1,6 +1,7 @@
 package com.github.damian_git_99.backend.project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.damian_git_99.backend.configs.security.SpringSecurityConfig;
 import com.github.damian_git_99.backend.project.controllers.ProjectController;
 import com.github.damian_git_99.backend.project.dto.ProjectRequest;
 import com.github.damian_git_99.backend.project.models.Project;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProjectController.class)
+@Import(SpringSecurityConfig.class)
 class ProjectControllerTest extends BaseControllerTest {
 
     @Autowired
