@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Alert, Button, Card, Col, Container, ListGroup, ProgressBar, Row, Spinner } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { deleteProjectById, findProjectById } from '../api/ProjectApi';
-import { Alert } from '../components/Alert';
-import { Spinner } from '../components/Spinner';
 import { UserContext } from '../context/ContextProvider';
 import { confirmDialog, successMessage } from '../util/messages';
 
@@ -35,64 +34,64 @@ export const ProjectDetails = () => {
   };
 
   return (
-    <div className="container mt-4">
-      {error && <Alert message={error} type="danger" />}
-      {isLoading && <Spinner />}
+    <Container className="mt-4">
+      {error && <Alert variant="danger">{error}</Alert>}
+        <Row className=' justify-content-center'>
+          <Col sm={1}>
+            {isLoading && <Spinner animation='grow' /> }
+          </Col>
+        </Row>
       {!error && !isLoading
         ? (
-        <row>
-          <div className="row align-items-center justify-content-around">
-            <div className="col-3">
-              <button className="btn btn-outline-primary">Add Task</button>
-            </div>
-            <div className="col-3">
-              <div className="progress">
-                <div
-                  className="progress-bar progress-bar-striped"
-                  role="progressbar"
-                  style={{ width: '25%' }}
-                  aria-valuenow="25"
-                  aria-valuemin="0"
-                  aria-valuemax="100"> 25%
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <button
+        <Row>
+          <Row className="row align-items-center justify-content-around">
+            <Col className="col-3">
+              <Button variant='outline-primary'>Add Task</Button>
+            </Col>
+            <Col className="col-3">
+              <ProgressBar
+                striped
+                variant="primary"
+                now={25}
+                label='25%'
+              />
+            </Col>
+            <Col className="col-3">
+              <Button
                 onClick={() => handleDeleteProject(project.id)}
-                className="btn btn-outline-danger"
+                variant='outline-danger'
               >
                 Delete Project
-              </button>
-            </div>
-          </div>
-          <div className="row mt-5">
-            <div className="col-12">
-              <div className="card">
-                <div className="card-body">
-                  <h5 className="card-title">{project.name}</h5>
-                  <h6 className="card-subtitle mb-2 text-muted">
+              </Button>
+            </Col>
+          </Row>
+          <Row className="mt-5">
+            <Col>
+              <Card>
+                <Card.Body className="card-body">
+                  <Card.Title>{project.name}</Card.Title>
+                  <Card.Subtitle>
                     Created at: {new Date(project.createdAt).toString()}
-                  </h6>
-                  <p className="card-text">{project.description}</p>
-                </div>
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item">
-                    <div className="row">
-                      <div className="col">Task #1</div>
-                      <div className="col">mark as completed</div>
-                      <div className="col">Delete task</div>
-                    </div>
-                  </li>
-                  <li className="list-group-item">Task #1</li>
-                  <li className="list-group-item">Task #1</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </row>
+                  </Card.Subtitle>
+                  <Card.Text>{project.description}</Card.Text>
+                </Card.Body>
+                <ListGroup className="list-group list-group-flush">
+                  <ListGroup.Item className="list-group-item">
+                    <Row>
+                      <Col>Task #1</Col>
+                      <Col>mark as completed</Col>
+                      <Col>Delete task</Col>
+                    </Row>
+                  </ListGroup.Item>
+                  <ListGroup.Item>Task #1</ListGroup.Item>
+                  <ListGroup.Item>Task #1</ListGroup.Item>
+                </ListGroup>
+              </Card>
+            </Col>
+          </Row>
+        </Row>
           )
         : null }
-    </div>
+    </Container>
   );
 };
