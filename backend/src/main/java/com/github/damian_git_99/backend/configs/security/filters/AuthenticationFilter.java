@@ -7,6 +7,7 @@ import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.daos.UserDao;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +34,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final ObjectMapper objectMapper;
     private final UserDao userDao;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService, UserDao userDao) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager
+            , JWTService jwtService
+            , UserDao userDao) {
+
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userDao = userDao;
@@ -43,8 +47,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @SneakyThrows
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        UserRequestAuth requestAuth = null;
+    public Authentication attemptAuthentication(HttpServletRequest request
+            , HttpServletResponse response) throws AuthenticationException {
+
+        UserRequestAuth requestAuth;
 
         try {
             requestAuth = objectMapper.readValue(request.getInputStream(), UserRequestAuth.class);
@@ -56,10 +62,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         var password = requestAuth.getPassword();
 
         if (email == null || password == null) {
-            // todo throw error in body
             Map<String, Object> body = new HashMap<>();
             body.put("error", "Email and password cannot be empty");
-            response.setContentType("application/json");
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write(objectMapper.writeValueAsString(body));
             return null;
@@ -71,9 +76,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request
+            , HttpServletResponse response
+            , FilterChain chain
+            , Authentication authResult) throws IOException, ServletException {
+
         User user = userDao.findByEmail(authResult.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -94,7 +101,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request
+            , HttpServletResponse response
+            , AuthenticationException failed) throws IOException, ServletException {
+
         Map<String, String> map = new HashMap<>();
         map.put("error", "Authentication ERROR: incorrect email or password");
         response.getWriter().write(objectMapper.writeValueAsString(map));
