@@ -32,7 +32,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserDao userDao, RoleService roleService) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder
+            , UserDao userDao
+            , RoleService roleService) {
         this.passwordEncoder = passwordEncoder;
         this.userDao = userDao;
         this.roleService = roleService;
@@ -41,7 +43,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void signUp(UserRequest userRequest) {
         Optional<User> userExists = userDao.findByEmail(userRequest.getEmail());
-
         if (userExists.isPresent()) {
             log.info("Email is already Taken: " + userRequest.getEmail());
             throw new EmailAlreadyTakenException("Email is already Taken");
@@ -74,9 +75,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optionalUser = this.userDao.findByEmail(email);
-        if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User not found");
-        User user = optionalUser.get();
-        System.out.println(user.getRoles());
+        User user = optionalUser
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Collection<? extends GrantedAuthority> authorities = user.getRoles().stream()
                 .map(Role::getName)
                 .map(SimpleGrantedAuthority::new)
