@@ -6,7 +6,7 @@ import com.github.damian_git_99.backend.project.exceptions.ForbiddenProjectExcep
 import com.github.damian_git_99.backend.project.exceptions.ProjectNameAlreadyExists;
 import com.github.damian_git_99.backend.project.exceptions.ProjectNotFoundException;
 import com.github.damian_git_99.backend.project.daos.ProjectDao;
-import com.github.damian_git_99.backend.security.AuthenticatedUser;
+import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
@@ -69,16 +69,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProjectById(Long projectId, AuthenticatedUser authenticatedUser) {
-        Project project = projectDao.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
-
-        boolean projectBelongsToTheAuthenticatedUser = project
-                .getUser().getId().equals(authenticatedUser.getId());
-
-        if (!projectBelongsToTheAuthenticatedUser) {
-            throw new ForbiddenProjectException("Project does not belong to the authenticated user");
-        }
-
+        Project project = this.findProjectById(projectId, authenticatedUser);
         projectDao.delete(project);
     }
 

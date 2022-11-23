@@ -1,7 +1,7 @@
 package com.github.damian_git_99.backend.security.filters;
 
-import com.github.damian_git_99.backend.security.jwt.JWTService;
-import com.github.damian_git_99.backend.security.jwt.exceptions.InvalidJwtTokenException;
+import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
+import com.github.damian_git_99.backend.configs.security.jwt.exceptions.InvalidJwtTokenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +16,13 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AuthorizationFilterTest {
+class ValidationJWTFilterTest {
 
     @Autowired
     private MockMvc mvc;

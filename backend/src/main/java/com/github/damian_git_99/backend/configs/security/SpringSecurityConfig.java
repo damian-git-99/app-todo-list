@@ -1,19 +1,21 @@
-package com.github.damian_git_99.backend.security;
+package com.github.damian_git_99.backend.configs.security;
 
-import com.github.damian_git_99.backend.security.filters.AuthenticationFilter;
-import com.github.damian_git_99.backend.security.filters.AuthorizationFilter;
-import com.github.damian_git_99.backend.security.jwt.JWTService;
+import com.github.damian_git_99.backend.configs.security.filters.AuthenticationFilter;
+import com.github.damian_git_99.backend.configs.security.filters.ValidationJWTFilter;
+import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.daos.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,38 +27,44 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class SpringSecurityConfig {
 
     private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
-    private final UserDao userDao;
+    private final CustomHttpConfigurer customHttpConfigurer;
+
     @Autowired
-    public SpringSecurityConfig(JWTService jwtService, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService, UserDao userDao) {
+    public SpringSecurityConfig(JWTService jwtService
+            , PasswordEncoder passwordEncoder
+            , UserDetailsService userDetailsService, UserDao userDao, CustomHttpConfigurer customHttpConfigurer) {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
-        this.userDao = userDao;
+        this.customHttpConfigurer = customHttpConfigurer;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
-
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
                 .anyRequest().hasRole("USER");
+        http.apply(customHttpConfigurer);
+        http.addFilterBefore(new ValidationJWTFilter(jwtService), AuthenticationFilter.class);
+        return http.build();
+    }
 
-        http.addFilter(new AuthenticationFilter(this.authenticationManager(), jwtService, userDao));
-        http.addFilterBefore(new AuthorizationFilter(jwtService), AuthenticationFilter.class);
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
     }
 
     @Bean

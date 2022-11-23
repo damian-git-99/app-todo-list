@@ -1,6 +1,7 @@
 package com.github.damian_git_99.backend.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.damian_git_99.backend.configs.security.SpringSecurityConfig;
 import com.github.damian_git_99.backend.user.controllers.UserController;
 import com.github.damian_git_99.backend.util.BaseControllerTest;
 import com.github.damian_git_99.backend.util.WithMockCustomUser;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -27,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
+@Import(SpringSecurityConfig.class)
 class UserControllerTest extends BaseControllerTest {
 
     @Autowired

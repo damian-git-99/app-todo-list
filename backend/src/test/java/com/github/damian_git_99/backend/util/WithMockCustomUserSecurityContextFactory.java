@@ -1,6 +1,6 @@
 package com.github.damian_git_99.backend.util;
 
-import com.github.damian_git_99.backend.security.AuthenticatedUser;
+import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +23,7 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
         var auth = new AuthenticatedUser(annotation.id());
         var token = new UsernamePasswordAuthenticationToken(auth, annotation.password(), roles);
         context.setAuthentication(token);
+        System.out.println(context);
         return context;
     }
 

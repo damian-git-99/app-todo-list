@@ -1,6 +1,8 @@
 package com.github.damian_git_99.backend.security.jwt;
 
-import com.github.damian_git_99.backend.security.jwt.exceptions.InvalidJwtTokenException;
+import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
+import com.github.damian_git_99.backend.configs.security.jwt.JWTServiceImpl;
+import com.github.damian_git_99.backend.configs.security.jwt.exceptions.InvalidJwtTokenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

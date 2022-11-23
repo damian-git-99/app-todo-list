@@ -1,4 +1,4 @@
-package com.github.damian_git_99.backend.security.filters.dto;
+package com.github.damian_git_99.backend.configs.security.filters.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

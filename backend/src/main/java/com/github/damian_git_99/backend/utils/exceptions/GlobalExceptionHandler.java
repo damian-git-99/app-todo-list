@@ -1,6 +1,5 @@
-package com.github.damian_git_99.backend.security.exceptions;
+package com.github.damian_git_99.backend.utils.exceptions;
 
-import com.github.damian_git_99.backend.user.exceptions.EmailAlreadyTakenException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,14 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class SecurityExceptionHandler {
+public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BadCredentialsException.class)
-    ResponseEntity<Map<String, Object>> handleException(BadCredentialsException exception){
+    @ExceptionHandler(InternalServerException.class)
+    ResponseEntity<Map<String, Object>> handleInternalError(InternalServerException exception){
         Map<String, Object> map = new HashMap<>();
         map.put("error", exception.getMessage());
         return ResponseEntity
-                .badRequest()
+                .internalServerError()
                 .body(map);
     }
 
