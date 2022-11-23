@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from 'react-router-dom';
 import { createProject } from '../api/ProjectApi';
-import { Alert } from '../components/Alert';
-import { Spinner } from '../components/Spinner';
 import { UserContext } from '../context/ContextProvider';
 import { successMessage } from '../util/messages';
 import { isThereAnEmptyField } from '../util/validations';
+import { Button, Col, Form, Spinner } from 'react-bootstrap';
 
 export const CreateProject = () => {
   const navigate = useNavigate();
@@ -47,34 +49,39 @@ export const CreateProject = () => {
   };
 
   return (
-  <div className='container mt-4'>
-    <div className="row">
-      <div className="col">
-        <button className='btn btn-outline-dark px-4'>Return</button>
-      </div>
-      <div className="col">
-        {error && <Alert message={error} type="danger" />}
-        {isLoading && <Spinner />}
-      </div>
-    </div>
-    <div className="row justify-content-center align-items-center pt-5">
-      <div className="col-md-5">
-      <form onSubmit={handleSubmit}>
-            <div className="row mb-4">
-              <div className="col-lg-12">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="form-control form-control-lg fs-6 border-0 shadow-sm"
+    <Container className="mt-4">
+      <Row>
+        <Col>
+          <button className="btn btn-outline-dark px-4">Return</button>
+        </Col>
+        <Col>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Row className=' justify-content-center'>
+            <Col sm={1}>
+              {isLoading && <Spinner animation='grow' /> }
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+
+      <Row className="justify-content-center align-items-center pt-5">
+        <Col md={5}>
+          <Form onSubmit={handleSubmit}>
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Form.Control
+                  type='text'
+                  placeholder='Name'
+                  className='fs-6 border-0 shadow-sm'
                   value={name}
                   onChange={handleOnChange}
-                  name="name"
+                  name='name'
                 />
-              </div>
-            </div>
+              </Col>
+            </Row>
 
-            <div className="row mb-4">
-              <div className="col-lg-12">
+            <Row className="mb-4">
+              <Col lg={12}>
                 <textarea
                   rows={10}
                   type="text"
@@ -82,19 +89,21 @@ export const CreateProject = () => {
                   className="form-control form-control-lg fs-6 border-0 shadow-sm"
                   value={description}
                   onChange={handleOnChange}
-                  name="description"></textarea>
-              </div>
-            </div>
+                  name="description"
+                ></textarea>
+              </Col>
+            </Row>
 
-            <div className="row">
-              <div className="col">
-                <button type="submit" className="btn btn-dark px-3">
+            <Row>
+              <Col>
+                <Button type="submit" variant="dark" className="px-3">
                   Create Project
-                </button>
-              </div>
-            </div>
-          </form>
-      </div>
-    </div>
-  </div>);
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
+  );
 };

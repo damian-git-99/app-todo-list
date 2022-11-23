@@ -1,10 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useContext, useState } from 'react';
-import { Spinner } from '../components/Spinner';
-import { Alert } from '../components/Alert';
 import { isThereAnEmptyField } from '../util/validations';
 import { login } from '../api/UserApi';
 import { UserContext } from '../context/ContextProvider';
+import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 
 export const LogIn = () => {
   const userContext = useContext(UserContext);
@@ -51,55 +50,59 @@ export const LogIn = () => {
   };
 
   return (
-    <div className="container-lg">
-      <div
+    <Container fluid="lg">
+      <Row
         style={{ height: '500px' }}
-        className="row justify-content-center align-items-center"
+        className="justify-content-center align-items-center"
       >
         <h1 className="text-center">Log in</h1>
-        {error && <Alert message={error} type="danger" />}
-        {loading && <Spinner />}
-        <div className="col-12 col-md-6">
-          <form action="" onSubmit={handleSubmit}>
-            <div className="row mb-4">
-              <div className="col-lg-12">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="form-control form-control-lg fs-6 border-0 shadow-sm"
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Row className=' justify-content-center'>
+          <Col sm={1}>
+            {loading && <Spinner animation='grow' /> }
+          </Col>
+        </Row>
+        <Col md={6}>
+          <Form onSubmit={handleSubmit}>
+
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Form.Control
+                  type='email'
+                  placeholder='Email'
+                  name='email'
                   value={email}
                   onChange={handleOnChange}
-                  name="email"
+                  className="fs-6 border-0 shadow-sm"
                 />
-              </div>
-            </div>
+              </Col>
+            </Row>
 
-            <div className="row mb-4">
-              <div className="col-lg-12">
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="form-control form-control-lg fs-6 border-0 shadow-sm"
-                  value={password}
-                  onChange={handleOnChange}
-                  name="password"
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Form.Control
+                    type='password'
+                    placeholder='Password'
+                    name='password'
+                    value={password}
+                    onChange={handleOnChange}
+                    className="fs-6 border-0 shadow-sm"
                 />
-              </div>
-            </div>
+              </Col>
+            </Row>
 
-            <div className="row">
-              <div className="col">
-                <button type="submit" className="btn btn-primary px-3">
-                  Sign up
-                </button>
-              </div>
-              <div className="col">
+            <Row>
+              <Col>
+                <Button type="submit" variant='primary' className="px-3"> Sign up </Button>
+              </Col>
+              <Col>
                 <Link to="/signup">I do not have an account</Link>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+              </Col>
+            </Row>
+
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 };

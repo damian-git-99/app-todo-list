@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react';
+import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import { signup } from '../api/UserApi';
-import { Alert } from '../components/Alert';
-import { Spinner } from '../components/Spinner';
 import { UserContext } from '../context/ContextProvider';
 import { successMessage } from '../util/messages';
 import { isThereAnEmptyField } from '../util/validations';
@@ -59,78 +58,82 @@ export const SignUp = () => {
   };
 
   return (
-    <div className="container-lg">
-      <div style={{ height: '500px' }} className="row justify-content-center align-items-center">
+    <Container fluid='lg'>
+      <Row style={{ height: '500px' }} className="justify-content-center align-items-center">
         <h1 className="text-center">Signup</h1>
-        { error && <Alert message={error} type='danger' /> }
-        { loading && <Spinner /> }
-        <div className="col-12 col-md-6">
-          <form action="" onSubmit={handleSubmit}>
-            <div className="row mb-4">
-              <div className="col-lg-12">
-                <input
-                  type="text"
-                  placeholder="Username"
-                  className="form-control form-control-lg fs-6 border-0 shadow-sm"
-                  value={username}
-                  onChange={handleOnChange}
-                  name="username"
-                />
-              </div>
-            </div>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Row className=' justify-content-center'>
+          <Col sm={1}>
+            {loading && <Spinner animation='grow' /> }
+          </Col>
+        </Row>
+        <Col md={6}>
+          <Form action="" onSubmit={handleSubmit}>
+            <Row className="mb-4">
+              <Col lg={12} >
+                <Form.Control
+                    type='text'
+                    placeholder='Username'
+                    name='username'
+                    value={username}
+                    onChange={handleOnChange}
+                    className="form-control form-control-lg fs-6 border-0 shadow-sm"
+                  />
+              </Col>
+            </Row>
 
-            <div className="row mb-4">
-              <div className="col-lg-12">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="form-control form-control-lg fs-6 border-0 shadow-sm"
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Form.Control
+                  type='email'
+                  placeholder='Email'
+                  name='email'
                   value={email}
                   onChange={handleOnChange}
-                  name="email"
-                />
-              </div>
-            </div>
-
-            <div className="row mb-4">
-              <div className="col-lg-12">
-                <input
-                  type="password"
-                  placeholder="Password"
                   className="form-control form-control-lg fs-6 border-0 shadow-sm"
+                />
+              </Col>
+            </Row>
+
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Form.Control
+                  type='password'
+                  placeholder='Password'
+                  name='password'
                   value={password}
                   onChange={handleOnChange}
-                  name="password"
-                />
-              </div>
-            </div>
-
-            <div className="row mb-4">
-              <div className="col-lg-12">
-                <input
-                  type="password"
-                  placeholder="repeat password"
                   className="form-control form-control-lg fs-6 border-0 shadow-sm"
+                />
+              </Col>
+            </Row>
+
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Form.Control
+                  type='password'
+                  placeholder='Repeat password'
+                  name='repeatPassword'
                   value={repeatPassword}
                   onChange={handleOnChange}
-                  name="repeatPassword"
+                  className="form-control form-control-lg fs-6 border-0 shadow-sm"
                 />
-              </div>
-            </div>
+              </Col>
+            </Row>
 
-            <div className="row">
-              <div className="col">
-                <button type="submit" className="btn btn-primary px-3">
+            <Row>
+              <Col>
+                <Button type="submit" variant='primary' className="px-3">
                   Sign up
-                </button>
-              </div>
-              <div className="col">
+                </Button>
+              </Col>
+              <Col>
                 <Link to="/login">I already have an account</Link>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 };

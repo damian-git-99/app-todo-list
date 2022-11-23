@@ -1,9 +1,12 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useContext, useEffect, useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Alert from 'react-bootstrap/Alert';
 import { findAllprojects } from '../api/ProjectApi';
-import { Alert } from '../components/Alert';
-import { Card } from '../components/Card';
-import { Spinner } from '../components/Spinner';
+import { ProjectCard } from '../components/ProjectCard';
 import { UserContext } from '../context/ContextProvider';
+import { Col, Spinner } from 'react-bootstrap';
 
 export const Home = () => {
   const context = useContext(UserContext);
@@ -21,16 +24,20 @@ export const Home = () => {
   }, []);
 
   return (
-    <div className="container mt-5 pb-2">
+    <Container className="container mt-5 pb-2">
       <h1 className='text-center'>My Projects</h1>
-      { isLoading && <Spinner />}
-      {error && <Alert message={error} type="danger" />}
-      { projects && projects.length === 0 ? <Alert message="you don't have any project ..." type='dark' /> : null }
-      <div className="row mt-4">
+      {error && <Alert variant="danger">{error}</Alert>}
+        <Row className=' justify-content-center'>
+          <Col sm={1}>
+            {isLoading && <Spinner animation='grow' /> }
+          </Col>
+        </Row>
+      { !error && projects && projects.length === 0 ? <Alert variant='dark'>you don't have any project ...</Alert> : null }
+      <Row className="mt-4">
           {projects.map((p) => (
-            <Card key={p.id} project={p} />
+            <ProjectCard key={p.id} project={p} />
           ))}
-      </div>
-    </div>
+      </Row>
+    </Container>
   );
 };
