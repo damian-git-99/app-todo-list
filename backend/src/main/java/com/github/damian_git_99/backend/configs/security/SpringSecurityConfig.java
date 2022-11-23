@@ -38,7 +38,7 @@ public class SpringSecurityConfig {
     @Autowired
     public SpringSecurityConfig(JWTService jwtService
             , PasswordEncoder passwordEncoder
-            , UserDetailsService userDetailsService, UserDao userDao, CustomHttpConfigurer customHttpConfigurer) {
+            , UserDetailsService userDetailsService, CustomHttpConfigurer customHttpConfigurer) {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
