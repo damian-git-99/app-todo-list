@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AuthorizationFilter extends OncePerRequestFilter {
+public class ValidationJWTFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
     private final ObjectMapper mapper;
 
-    public AuthorizationFilter(JWTService jwtService) {
+    public ValidationJWTFilter(JWTService jwtService) {
         this.jwtService = jwtService;
         this.mapper = new ObjectMapper();
     }

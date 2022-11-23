@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AuthorizationFilterTest {
+class ValidationJWTFilterTest {
 
     @Autowired
     private MockMvc mvc;
