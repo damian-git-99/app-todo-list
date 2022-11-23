@@ -1,5 +1,6 @@
 package com.github.damian_git_99.backend.util;
 
+import com.github.damian_git_99.backend.configs.security.CustomHttpConfigurer;
 import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.daos.UserDao;
 import com.github.damian_git_99.backend.user.role.RoleRepository;
@@ -22,5 +23,7 @@ public class BaseControllerTest {
     protected UserService userService;
     @MockBean
     protected UserDetailsService userDetailsService;
+    @MockBean
+    protected CustomHttpConfigurer customHttpConfigurer;
 
 }
