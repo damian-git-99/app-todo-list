@@ -1,7 +1,7 @@
 package com.github.damian_git_99.backend.configs.security;
 
 import com.github.damian_git_99.backend.configs.security.filters.AuthenticationFilter;
-import com.github.damian_git_99.backend.configs.security.filters.AuthorizationFilter;
+import com.github.damian_git_99.backend.configs.security.filters.ValidationJWTFilter;
 import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
 import com.github.damian_git_99.backend.user.daos.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -37,14 +33,16 @@ public class SpringSecurityConfig {
     private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
-    private final MyCustomDsl customDsl;
+    private final CustomHttpConfigurer customHttpConfigurer;
 
     @Autowired
-    public SpringSecurityConfig(JWTService jwtService, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService, UserDao userDao) {
+    public SpringSecurityConfig(JWTService jwtService
+            , PasswordEncoder passwordEncoder
+            , UserDetailsService userDetailsService, UserDao userDao) {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
-        this.customDsl = new MyCustomDsl(jwtService, userDao);
+        this.customHttpConfigurer = new CustomHttpConfigurer(jwtService, userDao);
     }
 
     @Bean
@@ -55,9 +53,8 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
                 .anyRequest().hasRole("USER");
-        // http.addFilter(new AuthenticationFilter(auth, jwtService, userDao));
-        http.apply(customDsl);
-        http.addFilterBefore(new AuthorizationFilter(jwtService), AuthenticationFilter.class);
+        http.apply(customHttpConfigurer);
+        http.addFilterBefore(new ValidationJWTFilter(jwtService), AuthenticationFilter.class);
         return http.build();
     }
 

@@ -7,12 +7,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
-public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
+public class CustomHttpConfigurer extends AbstractHttpConfigurer<CustomHttpConfigurer, HttpSecurity> {
 
     private final JWTService jwtService;
     private final UserDao userDao;
 
-    public MyCustomDsl(JWTService jwtService, UserDao userDao) {
+    public CustomHttpConfigurer(JWTService jwtService, UserDao userDao) {
         this.jwtService = jwtService;
         this.userDao = userDao;
     }
