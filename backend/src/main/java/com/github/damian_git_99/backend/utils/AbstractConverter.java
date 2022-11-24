@@ -10,12 +10,14 @@ public interface AbstractConverter<E, D> {
     D toDto(E entity);
 
     default List<E> toEntities(List<D> dtos) {
+        if (dtos == null) return null;
         return dtos.stream()
                 .map(this::toEntity)
                 .collect(Collectors.toList());
     }
 
     default List<D> toDtos(List<E> entities) {
+        if (entities == null) return null;
         return entities.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
