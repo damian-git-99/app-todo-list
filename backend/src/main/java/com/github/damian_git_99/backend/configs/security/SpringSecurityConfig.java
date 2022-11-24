@@ -3,7 +3,6 @@ package com.github.damian_git_99.backend.configs.security;
 import com.github.damian_git_99.backend.configs.security.filters.AuthenticationFilter;
 import com.github.damian_git_99.backend.configs.security.filters.ValidationJWTFilter;
 import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
-import com.github.damian_git_99.backend.user.daos.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
