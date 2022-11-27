@@ -22,14 +22,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task createTask(AuthenticatedUser user, Long projectId, TaskRequest taskRequest) {
+    public Task createTask(AuthenticatedUser user
+            , Long projectId
+            , TaskRequest taskRequest) {
         Project project = projectService.findProjectById(projectId, user);
         Task task = Task.builder()
                 .taskName(taskRequest.getTaskName())
                 .description(taskRequest.getDescription())
                 .priority(taskRequest.getPriority())
+                .project(project)
                 .build();
-        task.setProject(project);
         return taskDao.save(task);
     }
 
