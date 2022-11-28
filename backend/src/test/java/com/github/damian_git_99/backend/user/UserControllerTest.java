@@ -39,11 +39,6 @@ class UserControllerTest extends BaseControllerTest {
 
     @Nested
     class SignUpTests {
-
-        @Mock
-        private UserService userService;
-
-
         private ResultActions requestSignUp(UserRequest userRequest) throws Exception {
             return mvc.perform(post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -179,7 +174,6 @@ class UserControllerTest extends BaseControllerTest {
         void shouldFailWhenTokenIsNotSent() throws Exception {
             mvc.perform(get("/api/v1/users/info"))
                     .andExpect(status().isForbidden());
-
         }
 
         @Test
@@ -187,9 +181,9 @@ class UserControllerTest extends BaseControllerTest {
         @WithMockCustomUser(id = 1)
         void shouldSuccess() throws Exception {
             User user = User.builder()
-                            .username("damian")
-                            .email("damian@gmail.com")
-                            .build();
+                    .username("damian")
+                    .email("damian@gmail.com")
+                    .build();
 
             given(userService.findById(1L)).willReturn(Optional.of(user));
 
