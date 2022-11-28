@@ -12,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/tasks")
 public class TaskController {
@@ -25,12 +27,15 @@ public class TaskController {
 
     @PostMapping("/{projectId}")
     public ResponseEntity<?> createTask(@PathVariable(name = "projectId") Long projectId
-            , @RequestBody TaskRequest taskRequest
+            , @RequestBody @Valid TaskRequest taskRequest
             , BindingResult result
             , Authentication authentication) {
 
         if (result.hasErrors()) {
             var error = BindingResultUtils.getFirstError(result);
+            return ResponseEntity
+                    .badRequest()
+                    .body(error);
         }
 
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
