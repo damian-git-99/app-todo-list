@@ -1,8 +1,6 @@
 package com.github.damian_git_99.backend.project.controllers;
 
-import com.github.damian_git_99.backend.project.dto.ProjectDtoConverter;
-import com.github.damian_git_99.backend.project.dto.ProjectRequest;
-import com.github.damian_git_99.backend.project.dto.ProjectResponse;
+import com.github.damian_git_99.backend.project.dto.*;
 import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.services.ProjectService;
 import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
@@ -29,6 +27,7 @@ public class ProjectController {
     private final ProjectService projectService;
     private final UserService userService;
     private final ProjectDtoConverter projectConverter = new ProjectDtoConverter();
+    private final ProjectDetailsConverter projectDetailsConverter = new ProjectDetailsConverter();
 
     @Autowired
     public ProjectController(ProjectService projectService, UserService userService) {
@@ -69,10 +68,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ProjectResponse findProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
+    public ProjectDetailsResponse findProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
         Project project = projectService.findProjectById(id, authenticatedUser);
-        return projectConverter.toDto(project);
+        return projectDetailsConverter.toDto(project);
     }
 
     @DeleteMapping("/{id}")
