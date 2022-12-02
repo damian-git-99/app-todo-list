@@ -5,11 +5,17 @@ import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.services.ProjectService;
 import com.github.damian_git_99.backend.task.daos.TaskDao;
 import com.github.damian_git_99.backend.task.dto.TaskRequest;
+import com.github.damian_git_99.backend.task.exceptions.ForbiddenTaskException;
+import com.github.damian_git_99.backend.task.exceptions.TaskNotFoundException;
 import com.github.damian_git_99.backend.task.models.Task;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
+@Transactional
 public class TaskServiceImpl implements TaskService {
 
     private final ProjectService projectService;
@@ -33,6 +39,22 @@ public class TaskServiceImpl implements TaskService {
                 .project(project)
                 .build();
         return taskDao.save(task);
+    }
+
+    @Override
+    public void deleteTaskById(AuthenticatedUser user, Long projectId, Long taskId) {
+        Project project = projectService.findProjectById(projectId, user);
+
+        Task task = taskDao.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        boolean isTaskInProject = task.getProject().equals(project);
+
+        if (!isTaskInProject) {
+            throw new ForbiddenTaskException("Forbidden operation");
+        }
+
+        taskDao.deleteById(taskId);
     }
 
 }

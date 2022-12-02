@@ -47,4 +47,12 @@ public class TaskController {
                 .build();
     }
 
+    @DeleteMapping("/{projectId}/{taskId}")
+    public void deleteTask(@PathVariable(name = "projectId") Long projectId
+            , @PathVariable(name = "taskId") Long taskId
+            , Authentication authentication) {
+        AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
+        taskService.deleteTaskById(authenticatedUser, projectId, taskId);
+    }
+
 }

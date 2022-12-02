@@ -6,6 +6,7 @@ import com.github.damian_git_99.backend.task.models.Task;
 
 public interface TaskService {
 
-    public Task createTask(AuthenticatedUser user, Long projectId, TaskRequest task);
+    Task createTask(AuthenticatedUser user, Long projectId, TaskRequest task);
+    void deleteTaskById(AuthenticatedUser user, Long projectId, Long taskId);
 
 }
