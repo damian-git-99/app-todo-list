@@ -2,8 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Button, Card, Col, Container, ListGroup, ProgressBar, Row, Spinner } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { deleteProjectById, findProjectById } from '../api/ProjectApi';
+import { deleteTaskById } from '../api/TaskApi';
 import { UserContext } from '../context/ContextProvider';
 import { confirmDialog, successMessage } from '../util/messages';
+import { CreateTask } from './CreateTask';
+import { TaskDetails } from './TaskDetails';
 
 export const ProjectDetails = () => {
   const context = useContext(UserContext);
@@ -11,16 +14,18 @@ export const ProjectDetails = () => {
   const params = useParams();
   const [isLoading, setisLoading] = useState(false);
   const [error, seterror] = useState(false);
-  const [project, setproject] = useState({});
+  const [project, setproject] = useState({ tasks: [] });
+  const [taskCreated, settaskCreated] = useState(false);
   const id = params.id;
 
   useEffect(() => {
     setisLoading(true);
+    settaskCreated(false);
     findProjectById(context.token, id)
       .then((data) => setproject(data))
       .catch((e) => seterror(e.message))
       .finally((_) => setisLoading(false));
-  }, [id]);
+  }, [id, taskCreated]);
 
   const handleDeleteProject = (projectId) => {
     confirmDialog(() => {
@@ -30,6 +35,21 @@ export const ProjectDetails = () => {
           navigate('/');
         })
         .catch((e) => console.log(e));
+    });
+  };
+
+  const handleDeleteTask = (taskId) => {
+    confirmDialog(() => {
+      // todo call api
+      deleteTaskById(id, taskId, context.token)
+        .then(response => {
+          console.log(response);
+          setproject({
+            ...project,
+            tasks: project.tasks.filter(task => task.id !== taskId)
+          });
+        })
+        .catch(error => console.log(error));
     });
   };
 
@@ -46,7 +66,7 @@ export const ProjectDetails = () => {
         <Row>
           <Row className="row align-items-center justify-content-around">
             <Col className="col-3">
-              <Button variant='outline-primary'>Add Task</Button>
+              <CreateTask settaskCreated={settaskCreated} projectId={id} />
             </Col>
             <Col className="col-3">
               <ProgressBar
@@ -76,15 +96,18 @@ export const ProjectDetails = () => {
                   <Card.Text>{project.description}</Card.Text>
                 </Card.Body>
                 <ListGroup className="list-group list-group-flush">
-                  <ListGroup.Item className="list-group-item">
-                    <Row>
-                      <Col>Task #1</Col>
-                      <Col>mark as completed</Col>
-                      <Col>Delete task</Col>
-                    </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>Task #1</ListGroup.Item>
-                  <ListGroup.Item>Task #1</ListGroup.Item>
+                  { project.tasks.map(task => {
+                    return (
+                        <ListGroup.Item key={task.id} className="list-group-item">
+                          <Row className='align-items-baseline'>
+                            <Col>{ task.taskName }</Col>
+                            <Col>mark as completed</Col>
+                            <Col><TaskDetails/></Col>
+                            <Col><Button onClick={() => handleDeleteTask(task.id)} variant='danger'>Delete task</Button></Col>
+                          </Row>
+                        </ListGroup.Item>
+                    );
+                  }) }
                 </ListGroup>
               </Card>
             </Col>
