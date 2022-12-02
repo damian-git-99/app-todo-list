@@ -24,8 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TaskController.class)
@@ -127,6 +126,23 @@ class TaskControllerTest extends BaseControllerTest {
                         .andExpect(status().isCreated());
             }).isInstanceOf(IllegalArgumentException.class);
 
+        }
+
+    }
+
+    @Nested
+    class DeleteTaskTests {
+
+        @Test
+        @DisplayName("Should Return 200 ok when the task was deleted")
+        @WithMockCustomUser
+        void shouldReturn200WhenTaskWasDeleted() throws Exception {
+            mvc.perform(delete("/api/v1/tasks/1/1"))
+                    .andExpect(status().isOk());
+
+            then(taskService)
+                    .should(atLeastOnce())
+                    .deleteTaskById(any(AuthenticatedUser.class), any(Long.class), any(Long.class));
         }
 
     }
