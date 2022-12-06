@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -44,11 +43,12 @@ public class ProjectServiceImpl implements ProjectService {
             throw new ProjectNameAlreadyExists("Project name already exists");
         }
 
-        Project project = new Project();
-        project.setName(projectRequest.getName());
-        project.setDescription(projectRequest.getDescription());
-        project.setCreatedAt(LocalDateTime.now());
-        project.setUser(user);
+        Project project = Project.builder()
+                .name(projectRequest.getName())
+                .description(projectRequest.getDescription())
+                .createdAt(LocalDateTime.now())
+                .user(user)
+                .build();
 
         projectDao.save(project);
     }
