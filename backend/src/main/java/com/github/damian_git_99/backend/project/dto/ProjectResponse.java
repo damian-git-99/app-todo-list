@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * A DTO for the {@link Project} entity
@@ -18,5 +18,5 @@ public class ProjectResponse implements Serializable {
     private final Long id;
     private final String name;
     private final String description;
-    private final Date createdAt;
+    private final LocalDateTime createdAt;
 }

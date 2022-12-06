@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -20,6 +20,6 @@ public class ProjectDetailsResponse implements Serializable {
     private final Long id;
     private final String name;
     private final String description;
-    private final Date createdAt;
+    private final LocalDateTime createdAt;
     private final List<TaskResponse> tasks;
 }

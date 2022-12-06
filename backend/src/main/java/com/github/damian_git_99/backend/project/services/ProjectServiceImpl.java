@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -46,7 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = new Project();
         project.setName(projectRequest.getName());
         project.setDescription(projectRequest.getDescription());
-        project.setCreatedAt(new Date());
+        project.setCreatedAt(LocalDateTime.now());
         project.setUser(user);
 
         projectDao.save(project);
