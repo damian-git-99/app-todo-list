@@ -147,4 +147,17 @@ class TaskControllerTest extends BaseControllerTest {
 
     }
 
+    @Test
+    @WithMockCustomUser
+    void toggleTask_Authentication_Success() throws Exception {
+        long projectId = 1L;
+        long taskId = 2L;
+
+        mvc.perform(put("/api/v1/tasks/" + projectId + "/" + taskId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        then(taskService).should(atLeastOnce()).toggleTask(any(AuthenticatedUser.class), any(Long.class), any(Long.class));
+    }
+
 }

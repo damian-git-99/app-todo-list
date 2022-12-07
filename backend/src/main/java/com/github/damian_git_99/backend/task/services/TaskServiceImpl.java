@@ -57,4 +57,21 @@ public class TaskServiceImpl implements TaskService {
         taskDao.deleteById(taskId);
     }
 
+    @Override
+    public void toggleTask(AuthenticatedUser user, Long projectId, Long taskId) {
+        Project project = projectService.findProjectById(projectId, user);
+
+        Task task = taskDao.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        boolean isTaskInProject = task.getProject().equals(project);
+
+        if (!isTaskInProject) {
+            throw new ForbiddenTaskException("Forbidden operation");
+        }
+
+        boolean toggle = !task.isComplete();
+        task.setComplete(toggle);
+    }
+
 }
