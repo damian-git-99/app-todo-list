@@ -106,5 +106,6 @@ export const CreateTask = ({ projectId, settaskCreated }) => {
 };
 
 CreateTask.propTypes = {
-  projectId: PropTypes.string.isRequired
+  projectId: PropTypes.string.isRequired,
+  settaskCreated: PropTypes.func.isRequired
 };
