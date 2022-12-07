@@ -5,6 +5,7 @@ import com.github.damian_git_99.backend.task.models.Task;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,12 +16,13 @@ import java.io.Serializable;
  */
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class TaskRequest implements Serializable {
     @NotEmpty
-    private final String taskName;
+    private String taskName;
     @NotEmpty
-    private final String description;
+    private String description;
     @NotNull
-    private final Priority priority;
+    private Priority priority;
 }
