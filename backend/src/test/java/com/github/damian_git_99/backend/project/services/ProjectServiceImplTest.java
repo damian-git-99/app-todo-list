@@ -32,7 +32,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProjectServiceImplTest {
 
-
     @Mock
     private UserService userService;
     @Mock
@@ -40,69 +39,74 @@ class ProjectServiceImplTest {
     @InjectMocks
     private ProjectServiceImpl projectService;
 
-    @Test
-    @DisplayName("Should throw user not found exception when user does not exist")
-    void shouldThrowUserNotFound() {
-        ProjectRequest projectRequest = ProjectRequest.builder()
-                .name("new project")
-                .description("description")
-                .build();
+    @Nested
+    class CreateProjectTests {
 
-        given(userService.findById(1L)).willReturn(Optional.empty());
+        @Test
+        @DisplayName("Should throw user not found exception when user does not exist")
+        void shouldThrowUserNotFound() {
+            ProjectRequest projectRequest = ProjectRequest.builder()
+                    .name("new project")
+                    .description("description")
+                    .build();
 
-        assertThatThrownBy(() -> projectService.createProject(projectRequest, 1L))
-                .isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining("User Not Found");
+            given(userService.findById(1L)).willReturn(Optional.empty());
 
-    }
+            assertThatThrownBy(() -> projectService.createProject(projectRequest, 1L))
+                    .isInstanceOf(UserNotFoundException.class)
+                    .hasMessageContaining("User Not Found");
 
-    @Test
-    @DisplayName("Should Throw ProjectNameAlreadyExists exception")
-    void shouldThrowProjectNameAlreadyExists() {
-        Project project = new Project("project1", "description of my project");
-        List<Project> projects = List.of(project);
-        ProjectRequest projectRequest = ProjectRequest.builder()
-                .name("project1")
-                .description("description")
-                .build();
+        }
 
-        User user = User.builder()
-                .id(1L)
-                .username("damian")
-                .email("damian@gmial.com")
-                .projects(projects)
-                .build();
+        @Test
+        @DisplayName("Should Throw ProjectNameAlreadyExists exception")
+        void shouldThrowProjectNameAlreadyExists() {
+            Project project = new Project("project1", "description of my project");
+            List<Project> projects = List.of(project);
+            ProjectRequest projectRequest = ProjectRequest.builder()
+                    .name("project1")
+                    .description("description")
+                    .build();
 
-        given(userService.findById(1L)).willReturn(Optional.of(user));
+            User user = User.builder()
+                    .id(1L)
+                    .username("damian")
+                    .email("damian@gmial.com")
+                    .projects(projects)
+                    .build();
 
-        assertThatThrownBy(() -> projectService.createProject(projectRequest, 1L))
-                .isInstanceOf(ProjectNameAlreadyExists.class)
-                .hasMessageContaining("Project name already exists");
+            given(userService.findById(1L)).willReturn(Optional.of(user));
 
-    }
+            assertThatThrownBy(() -> projectService.createProject(projectRequest, 1L))
+                    .isInstanceOf(ProjectNameAlreadyExists.class)
+                    .hasMessageContaining("Project name already exists");
 
-    @Test
-    @DisplayName("Should create a project")
-    void shouldCreateProject() {
-        Project project = new Project("project1", "description of my project");
-        List<Project> projects = List.of(project);
-        ProjectRequest projectRequest = ProjectRequest.builder()
-                .name("project2")
-                .description("description")
-                .build();
+        }
 
-        User user = User.builder()
-                .id(1L)
-                .username("damian")
-                .email("damian@gmial.com")
-                .projects(projects)
-                .build();
+        @Test
+        @DisplayName("Should create a project")
+        void shouldCreateProject() {
+            Project project = new Project("project1", "description of my project");
+            List<Project> projects = List.of(project);
+            ProjectRequest projectRequest = ProjectRequest.builder()
+                    .name("project2")
+                    .description("description")
+                    .build();
 
-        given(userService.findById(1L)).willReturn(Optional.of(user));
+            User user = User.builder()
+                    .id(1L)
+                    .username("damian")
+                    .email("damian@gmial.com")
+                    .projects(projects)
+                    .build();
 
-        projectService.createProject(projectRequest, 1L);
+            given(userService.findById(1L)).willReturn(Optional.of(user));
 
-        then(projectDao).should(atMostOnce()).save(any());
+            projectService.createProject(projectRequest, 1L);
+
+            then(projectDao).should(atMostOnce()).save(any());
+        }
+
     }
 
     @Nested

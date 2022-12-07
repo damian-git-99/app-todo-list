@@ -1,8 +1,6 @@
 package com.github.damian_git_99.backend.project.controllers;
 
-import com.github.damian_git_99.backend.project.dto.ProjectDtoConverter;
-import com.github.damian_git_99.backend.project.dto.ProjectRequest;
-import com.github.damian_git_99.backend.project.dto.ProjectResponse;
+import com.github.damian_git_99.backend.project.dto.*;
 import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.project.services.ProjectService;
 import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
@@ -10,6 +8,8 @@ import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import com.github.damian_git_99.backend.utils.BindingResultUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +23,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@Api( tags = "Projects")
 @RequestMapping("/api/v1/projects")
 public class ProjectController {
 
     private final ProjectService projectService;
     private final UserService userService;
     private final ProjectDtoConverter projectConverter = new ProjectDtoConverter();
+    private final ProjectDetailsConverter projectDetailsConverter = new ProjectDetailsConverter();
 
     @Autowired
     public ProjectController(ProjectService projectService, UserService userService) {
@@ -36,6 +38,7 @@ public class ProjectController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "This method is used to create a project")
     @PostMapping("")
     public ResponseEntity<Map<String, Object>> createProject(
             @Valid @RequestBody ProjectRequest projectRequest
@@ -57,6 +60,7 @@ public class ProjectController {
                 .build();
     }
 
+    @ApiOperation(value = "This method is used to get the projects of a user")
     @GetMapping("")
     public List<ProjectResponse> findAllProjectByUser(Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
@@ -68,13 +72,15 @@ public class ProjectController {
                 .collect(Collectors.toList());
     }
 
+    @ApiOperation(value = "This method is used to get the details of a project")
     @GetMapping("/{id}")
-    public ProjectResponse findProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
+    public ProjectDetailsResponse findProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
         Project project = projectService.findProjectById(id, authenticatedUser);
-        return projectConverter.toDto(project);
+        return projectDetailsConverter.toDto(project);
     }
 
+    @ApiOperation(value = "This method is used to delete a project")
     @DeleteMapping("/{id}")
     public void deleteProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();

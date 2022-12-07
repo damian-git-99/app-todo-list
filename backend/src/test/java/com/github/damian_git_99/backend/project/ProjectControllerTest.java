@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,52 +44,62 @@ class ProjectControllerTest extends BaseControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Test
-    @DisplayName("Should return return 400 when name is not sent")
-    @WithMockCustomUser(id = 1L)
-    void shouldFailWhenNameIsNotSent() throws Exception {
-        ProjectRequest request = new ProjectRequest();
-        request.setDescription("my project description");
-        mvc.perform(post("/api/v1/projects")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request))
-        ).andExpect(status().isBadRequest());
-    }
+    @Nested
+    class CreateProjectTests {
 
-    @Test
-    @DisplayName("Should return return 400 when description is not sent")
-    @WithMockCustomUser(id = 1L)
-    void shouldFailWhenDescriptionIsNotSent() throws Exception {
-        ProjectRequest request = new ProjectRequest();
-        request.setName("project");
-        mvc.perform(post("/api/v1/projects")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request))
-        ).andExpect(status().isBadRequest());
-    }
+        private ResultActions createProjectRequest(ProjectRequest request) throws Exception {
+            return mvc.perform(post("/api/v1/projects")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(request)));
+        }
 
-    @Test
-    @DisplayName("Should return return 200 when all data sent is valid")
-    @WithMockCustomUser(id = 1L)
-    void shouldReturn200WhenAllDataIsValid() throws Exception {
-        ProjectRequest request = new ProjectRequest();
-        request.setName("project");
-        request.setDescription("my project description");
-        mvc.perform(post("/api/v1/projects")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(request))
-        ).andExpect(status().isCreated());
+        @Test
+        @DisplayName("Should return return 400 when name is not sent")
+        @WithMockCustomUser()
+        void shouldFailWhenNameIsNotSent() throws Exception {
+            ProjectRequest request = new ProjectRequest();
+            request.setDescription("my project description");
+            createProjectRequest(request)
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return return 400 when description is not sent")
+        @WithMockCustomUser(id = 1L)
+        void shouldFailWhenDescriptionIsNotSent() throws Exception {
+            ProjectRequest request = new ProjectRequest();
+            request.setName("project");
+            createProjectRequest(request)
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return return 201 when all data sent is valid")
+        @WithMockCustomUser(id = 1L)
+        void shouldReturn200WhenAllDataIsValid() throws Exception {
+            ProjectRequest request = new ProjectRequest();
+            request.setName("project");
+            request.setDescription("my project description");
+            createProjectRequest(request)
+                    .andExpect(status().isCreated());
+        }
+
     }
 
     @Nested
-    class FindProjectByUserTests {
+    class FindProjectsByUserTests {
+
+        private ResultActions findProjectsRequest() throws Exception {
+            return mvc.perform(get("/api/v1/projects")
+                    .contentType(MediaType.APPLICATION_JSON));
+        }
 
         @Test
         @DisplayName("Should return 404 when user does not exist")
-        @WithMockCustomUser(id = 1L)
+        @WithMockCustomUser()
         void shouldReturn404WhenUserDoesNotExist() throws Exception {
-            mvc.perform(get("/api/v1/projects")
-            ).andExpect(status().isNotFound());
+            findProjectsRequest()
+                    .andExpect(status().isNotFound());
         }
 
         @Test
@@ -100,8 +111,8 @@ class ProjectControllerTest extends BaseControllerTest {
                     .email("damian@gmail.com")
                     .build();
             given(userService.findById(1L)).willReturn(Optional.of(user));
-            mvc.perform(get("/api/v1/projects")
-            ).andExpect(status().isOk());
+            findProjectsRequest()
+                    .andExpect(status().isOk());
         }
 
         @Test
@@ -118,9 +129,8 @@ class ProjectControllerTest extends BaseControllerTest {
                     .build();
 
             given(userService.findById(1L)).willReturn(Optional.of(user));
-
-            mvc.perform(get("/api/v1/projects")
-                    ).andExpect(status().isOk())
+            findProjectsRequest()
+                    .andExpect(status().isOk())
                     .andExpect(jsonPath("$").isArray());
         }
 
@@ -129,27 +139,32 @@ class ProjectControllerTest extends BaseControllerTest {
     @Nested
     class FindProjectByIdTests {
 
+        private ResultActions findProjectRequest(String id) throws Exception {
+            return mvc.perform(get("/api/v1/projects/".concat(id))
+                    .contentType(MediaType.APPLICATION_JSON));
+        }
+
         @Test
         @DisplayName("Should return 200 ok when project is found successfully")
-        @WithMockCustomUser(id = 1L)
+        @WithMockCustomUser()
         void shouldReturn200WhenProjectIsFound() throws Exception {
 
             given(projectService.findProjectById(any(Long.class), any(AuthenticatedUser.class)))
                     .willReturn(LoadData.LoadProject());
 
-            mvc.perform(get("/api/v1/projects/1"))
+            findProjectRequest("1")
                     .andExpect(status().isOk());
 
         }
 
         @Test
         @DisplayName("Should return a project when project is found successfully")
-        @WithMockCustomUser(id = 1L)
+        @WithMockCustomUser()
         void shouldReturnProject() throws Exception {
             given(projectService.findProjectById(any(Long.class), any(AuthenticatedUser.class)))
                     .willReturn(LoadData.LoadProject());
 
-            mvc.perform(get("/api/v1/projects/1"))
+            findProjectRequest("1")
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.name").exists())
                     .andExpect(jsonPath("$.description").exists())

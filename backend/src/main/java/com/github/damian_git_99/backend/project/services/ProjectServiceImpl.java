@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -43,11 +43,12 @@ public class ProjectServiceImpl implements ProjectService {
             throw new ProjectNameAlreadyExists("Project name already exists");
         }
 
-        Project project = new Project();
-        project.setName(projectRequest.getName());
-        project.setDescription(projectRequest.getDescription());
-        project.setCreatedAt(new Date());
-        project.setUser(user);
+        Project project = Project.builder()
+                .name(projectRequest.getName())
+                .description(projectRequest.getDescription())
+                .createdAt(LocalDateTime.now())
+                .user(user)
+                .build();
 
         projectDao.save(project);
     }

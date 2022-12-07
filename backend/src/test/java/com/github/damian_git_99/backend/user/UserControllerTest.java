@@ -7,11 +7,9 @@ import com.github.damian_git_99.backend.util.BaseControllerTest;
 import com.github.damian_git_99.backend.util.WithMockCustomUser;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.models.User;
-import com.github.damian_git_99.backend.user.services.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -24,7 +22,6 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atMostOnce;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -39,11 +36,6 @@ class UserControllerTest extends BaseControllerTest {
 
     @Nested
     class SignUpTests {
-
-        @Mock
-        private UserService userService;
-
-
         private ResultActions requestSignUp(UserRequest userRequest) throws Exception {
             return mvc.perform(post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +134,7 @@ class UserControllerTest extends BaseControllerTest {
 
         @Test
         @DisplayName("Should return 201 when all user info is sent and is valid")
-        void shouldSuccess() throws Exception {
+        void shouldReturn201WhenAllUserInfoIsValid() throws Exception {
             UserRequest userRequest = UserRequest.builder()
                     .username("damian")
                     .email("damian@gmail.com")
@@ -156,7 +148,7 @@ class UserControllerTest extends BaseControllerTest {
 
         @Test
         @DisplayName("Should call userService when all user info is sent and is valid")
-        void shouldSuccess2() throws Exception {
+        void shouldCallUserServiceWhenAllUserInfoIsValid() throws Exception {
             UserRequest userRequest = UserRequest.builder()
                     .username("damian")
                     .email("damian@gmail.com")
@@ -168,32 +160,35 @@ class UserControllerTest extends BaseControllerTest {
             then(userService).should(atMostOnce()).signUp(userRequest);
         }
 
-
     }
 
     @Nested
-    class getUserDetailsTests {
+    class GetUserDetailsTests {
+
+        private ResultActions requestUserDetails() throws Exception {
+            return mvc.perform(get("/api/v1/users/info")
+                    .contentType(MediaType.APPLICATION_JSON));
+        }
 
         @Test
         @DisplayName("It Should return 403 when user is not authorized")
         void shouldFailWhenTokenIsNotSent() throws Exception {
-            mvc.perform(get("/api/v1/users/info"))
+            requestUserDetails()
                     .andExpect(status().isForbidden());
-
         }
 
         @Test
         @DisplayName("It Should return 200 ok when user is authorized")
-        @WithMockCustomUser(id = 1)
-        void shouldSuccess() throws Exception {
+        @WithMockCustomUser()
+        void shouldReturn200WhenUserIsAuthenticated() throws Exception {
             User user = User.builder()
-                            .username("damian")
-                            .email("damian@gmail.com")
-                            .build();
+                    .username("damian")
+                    .email("damian@gmail.com")
+                    .build();
 
             given(userService.findById(1L)).willReturn(Optional.of(user));
 
-            mvc.perform(get("/api/v1/users/info"))
+            requestUserDetails()
                     .andExpect(status().isOk());
 
         }

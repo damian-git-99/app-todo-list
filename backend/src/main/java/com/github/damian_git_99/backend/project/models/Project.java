@@ -1,12 +1,16 @@
 package com.github.damian_git_99.backend.project.models;
 
+import com.github.damian_git_99.backend.task.models.Task;
 import com.github.damian_git_99.backend.user.models.User;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Builder
@@ -25,12 +29,15 @@ public class Project {
     private Long id;
     private String name;
     private String description;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private User user;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
+    @ToString.Exclude
+    @Builder.Default
+    private List<Task> tasks = new ArrayList<>();
 
     public Project(String name, String description) {
         this.name = name;

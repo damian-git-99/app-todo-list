@@ -3,7 +3,6 @@ package com.github.damian_git_99.backend.configs.security;
 import com.github.damian_git_99.backend.configs.security.filters.AuthenticationFilter;
 import com.github.damian_git_99.backend.configs.security.filters.ValidationJWTFilter;
 import com.github.damian_git_99.backend.configs.security.jwt.JWTService;
-import com.github.damian_git_99.backend.user.daos.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +34,13 @@ public class SpringSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final CustomHttpConfigurer customHttpConfigurer;
 
+    private static final String[] AUTH_WHITE_LIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
+            "/swagger-resources/**"
+    };
+
     @Autowired
     public SpringSecurityConfig(JWTService jwtService
             , PasswordEncoder passwordEncoder
@@ -52,6 +58,7 @@ public class SpringSecurityConfig {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
+                .antMatchers(AUTH_WHITE_LIST).permitAll()
                 .anyRequest().hasRole("USER");
         http.apply(customHttpConfigurer);
         http.addFilterBefore(new ValidationJWTFilter(jwtService), AuthenticationFilter.class);

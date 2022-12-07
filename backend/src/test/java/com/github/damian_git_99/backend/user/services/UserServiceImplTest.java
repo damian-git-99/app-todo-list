@@ -8,6 +8,7 @@ import com.github.damian_git_99.backend.user.daos.UserDao;
 import com.github.damian_git_99.backend.user.role.Role;
 import com.github.damian_git_99.backend.user.role.RoleService;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -38,87 +39,88 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    @Test
-    @DisplayName("Should throw EmailAlreadyTakenException when email is already taken")
-    void signUp() {
-        User user = User.builder()
-                .username("damian")
-                .email("damian@gmail.com")
-                .password("123456").build();
+    @Nested
+    class SignUpTests {
+        @Test
+        @DisplayName("Should throw EmailAlreadyTakenException when email is already taken")
+        void shouldThrowEmailAlreadyTakenException() {
+            User user = User.builder()
+                    .username("damian")
+                    .email("damian@gmail.com")
+                    .password("123456").build();
 
-        UserRequest userRequest = UserRequest.builder()
-                .username("Irving")
-                .email("damian@gmail.com")
-                .password("123456").build();
+            UserRequest userRequest = UserRequest.builder()
+                    .username("Irving")
+                    .email("damian@gmail.com")
+                    .password("123456").build();
 
-        given(userDao.findByEmail("damian@gmail.com"))
-                .willReturn(Optional.of(user));
+            given(userDao.findByEmail("damian@gmail.com"))
+                    .willReturn(Optional.of(user));
 
-        assertThatThrownBy(() -> userService.signUp(userRequest))
-                .isInstanceOf(EmailAlreadyTakenException.class)
-                .hasMessageContaining("Email is already Taken");
+            assertThatThrownBy(() -> userService.signUp(userRequest))
+                    .isInstanceOf(EmailAlreadyTakenException.class)
+                    .hasMessageContaining("Email is already Taken");
 
-        then(passwordEncoder).should(never()).encode(anyString());
-        then(userDao).should(never()).save(any());
-    }
+            then(passwordEncoder).should(never()).encode(anyString());
+            then(userDao).should(never()).save(any());
+        }
 
-    @Test
-    @DisplayName("Should throw InternalServerErrorException when role USER is not found")
-    void shouldThrowException(){
-        // todo
-        UserRequest userRequest = UserRequest.builder()
-                .username("Irving")
-                .email("damian@gmail.com")
-                .password("123456").build();
-        Role role = new Role("USER");
+        @Test
+        @DisplayName("Should throw InternalServerErrorException when role USER is not found")
+        void shouldThrowInternalServerErrorException() {
+            UserRequest userRequest = UserRequest.builder()
+                    .username("Irving")
+                    .email("damian@gmail.com")
+                    .password("123456").build();
+            
+            given(userDao.findByEmail("damian@gmail.com"))
+                    .willReturn(Optional.empty());
+            assertThatThrownBy(() -> userService.signUp(userRequest))
+                    .isInstanceOf(InternalServerException.class)
+                    .hasMessageContaining("An error occurred on the server");
+        }
 
-        given(userDao.findByEmail("damian@gmail.com"))
-                .willReturn(Optional.empty());
-        assertThatThrownBy(() -> userService.signUp(userRequest))
-                .isInstanceOf(InternalServerException.class)
-                .hasMessageContaining("An error occurred on the server");
-    }
+        @Test
+        @DisplayName("Should hash the password")
+        void shouldHashThePassword() {
+            UserRequest userRequest = UserRequest.builder()
+                    .username("Irving")
+                    .email("damian@gmail.com")
+                    .password("123456").build();
+            Role role = new Role("USER");
 
-    @Test
-    @DisplayName("Should hash the password")
-    void signUp2() {
-        UserRequest userRequest = UserRequest.builder()
-                .username("Irving")
-                .email("damian@gmail.com")
-                .password("123456").build();
-        Role role = new Role("USER");
+            given(userDao.findByEmail("damian@gmail.com"))
+                    .willReturn(Optional.empty());
+            given(passwordEncoder.encode("123456")).willReturn("hashed password");
+            given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
 
-        given(userDao.findByEmail("damian@gmail.com"))
-                .willReturn(Optional.empty());
-        given(passwordEncoder.encode("123456")).willReturn("hashed password");
-        given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
+            userService.signUp(userRequest);
+            ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
 
-        userService.signUp(userRequest);
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+            verify(userDao).save(captor.capture());
+            then(passwordEncoder).should(atMostOnce()).encode("123456");
+            assertThat(captor.getValue().getPassword()).isEqualTo("hashed password");
+        }
 
-        verify(userDao).save(captor.capture());
-        then(passwordEncoder).should(atMostOnce()).encode("123456");
-        assertThat(captor.getValue().getPassword()).isEqualTo("hashed password");
-    }
+        @Test
+        @DisplayName("Should call userDao")
+        void shouldCallUserDao() {
+            UserRequest userRequest = UserRequest.builder()
+                    .username("Irving")
+                    .email("damian@gmail.com")
+                    .password("123456").build();
+            Role role = new Role("USER");
 
-    @Test
-    @DisplayName("Should save the user")
-    void signUp3() {
-        UserRequest userRequest = UserRequest.builder()
-                .username("Irving")
-                .email("damian@gmail.com")
-                .password("123456").build();
-        Role role = new Role("USER");
+            given(userDao.findByEmail("damian@gmail.com"))
+                    .willReturn(Optional.empty());
+            given(passwordEncoder.encode("123456")).willReturn("hashed password");
+            given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
 
-        given(userDao.findByEmail("damian@gmail.com"))
-                .willReturn(Optional.empty());
-        given(passwordEncoder.encode("123456")).willReturn("hashed password");
-        given(roleService.findRoleByName("ROLE_USER")).willReturn(Optional.of(role));
+            userService.signUp(userRequest);
 
-        userService.signUp(userRequest);
+            then(userDao).should(atMostOnce()).save(any());
 
-        then(userDao).should(atMostOnce()).save(any());
-
+        }
     }
 
 }
