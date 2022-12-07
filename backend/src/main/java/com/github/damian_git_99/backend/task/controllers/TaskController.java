@@ -4,17 +4,19 @@ import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.task.dto.TaskRequest;
 import com.github.damian_git_99.backend.task.services.TaskService;
 import com.github.damian_git_99.backend.utils.BindingResultUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 
 @RestController
+@Api( tags = "Tasks")
 @RequestMapping("/api/v1/tasks")
 public class TaskController {
 
@@ -25,6 +27,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @ApiOperation(value = "This method is used to create a task")
     @PostMapping("/{projectId}")
     public ResponseEntity<?> createTask(@PathVariable(name = "projectId") Long projectId
             , @RequestBody @Valid TaskRequest taskRequest
@@ -47,6 +50,7 @@ public class TaskController {
                 .build();
     }
 
+    @ApiOperation(value = "This method is used to delete a task")
     @DeleteMapping("/{projectId}/{taskId}")
     public void deleteTask(@PathVariable(name = "projectId") Long projectId
             , @PathVariable(name = "taskId") Long taskId

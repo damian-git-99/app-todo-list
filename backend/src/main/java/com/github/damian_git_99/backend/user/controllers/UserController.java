@@ -7,6 +7,8 @@ import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import com.github.damian_git_99.backend.utils.BindingResultUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
+@Api( tags = "Users")
 @RequestMapping("/api/v1/users")
 @Slf4j
 public class UserController {
@@ -28,6 +31,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "This method is used to signup a user")
     @PostMapping("")
     ResponseEntity<Map<String, Object>> signUp(@RequestBody @Valid UserRequest request
             , BindingResult result) {
@@ -46,6 +50,7 @@ public class UserController {
                 .build();
     }
 
+    @ApiOperation(value = "This method is used to get the details of a user")
     @GetMapping("/info")
     ResponseEntity<UserResponse> getUserDetails(Authentication authentication) {
         AuthenticatedUser  auth = (AuthenticatedUser) authentication.getPrincipal();

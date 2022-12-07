@@ -8,6 +8,8 @@ import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
 import com.github.damian_git_99.backend.utils.BindingResultUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@Api( tags = "Projects")
 @RequestMapping("/api/v1/projects")
 public class ProjectController {
 
@@ -35,6 +38,7 @@ public class ProjectController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "This method is used to create a project")
     @PostMapping("")
     public ResponseEntity<Map<String, Object>> createProject(
             @Valid @RequestBody ProjectRequest projectRequest
@@ -56,6 +60,7 @@ public class ProjectController {
                 .build();
     }
 
+    @ApiOperation(value = "This method is used to get the projects of a user")
     @GetMapping("")
     public List<ProjectResponse> findAllProjectByUser(Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
@@ -67,6 +72,7 @@ public class ProjectController {
                 .collect(Collectors.toList());
     }
 
+    @ApiOperation(value = "This method is used to get the details of a project")
     @GetMapping("/{id}")
     public ProjectDetailsResponse findProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
@@ -74,6 +80,7 @@ public class ProjectController {
         return projectDetailsConverter.toDto(project);
     }
 
+    @ApiOperation(value = "This method is used to delete a project")
     @DeleteMapping("/{id}")
     public void deleteProjectById(@PathVariable(name = "id") Long id, Authentication authentication) {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
