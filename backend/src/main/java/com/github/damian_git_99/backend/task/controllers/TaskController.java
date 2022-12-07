@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@Api( tags = "Tasks")
+@Api(tags = "Tasks")
 @RequestMapping("/api/v1/tasks")
 public class TaskController {
 
@@ -58,5 +58,15 @@ public class TaskController {
         AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
         taskService.deleteTaskById(authenticatedUser, projectId, taskId);
     }
+
+    @ApiOperation(value = "This method is used to toggle the isComplete property task")
+    @PutMapping("/{projectId}/{taskId}")
+    public void toggleTask(@PathVariable(name = "projectId") Long projectId
+            , @PathVariable(name = "taskId") Long taskId
+            , Authentication authentication) {
+        AuthenticatedUser authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
+        taskService.toggleTask(authenticatedUser, projectId, taskId);
+    }
+
 
 }

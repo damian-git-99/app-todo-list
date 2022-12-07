@@ -18,4 +18,5 @@ public class TaskResponse implements Serializable {
     private final String taskName;
     private final String description;
     private final Priority priority;
+    private boolean isComplete;
 }

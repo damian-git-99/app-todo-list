@@ -12,6 +12,7 @@ public class TaskResponseConverter implements AbstractConverter<Task, TaskRespon
                 .taskName(dto.getTaskName())
                 .description(dto.getDescription())
                 .priority(dto.getPriority())
+                .isComplete(dto.isComplete())
                 .build();
     }
 
@@ -22,6 +23,7 @@ public class TaskResponseConverter implements AbstractConverter<Task, TaskRespon
                 .taskName(entity.getTaskName())
                 .description(entity.getDescription())
                 .priority(entity.getPriority())
+                .isComplete(entity.isComplete())
                 .build();
     }
 

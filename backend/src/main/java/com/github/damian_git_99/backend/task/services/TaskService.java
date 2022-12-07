@@ -8,5 +8,6 @@ public interface TaskService {
 
     Task createTask(AuthenticatedUser user, Long projectId, TaskRequest task);
     void deleteTaskById(AuthenticatedUser user, Long projectId, Long taskId);
+    void toggleTask(AuthenticatedUser user, Long projectId, Long taskId);
 
 }

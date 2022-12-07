@@ -154,7 +154,7 @@ class TaskServiceImplTest {
 
         @Test
         @DisplayName("should Delete The Task")
-        void shouldDeleteTheTask(){
+        void shouldDeleteTheTask() {
             AuthenticatedUser user = new AuthenticatedUser(1L);
             Project project = Project.builder()
                     .id(1L)
@@ -178,6 +178,66 @@ class TaskServiceImplTest {
 
             then(taskDao).should(atLeastOnce()).deleteById(any(Long.class));
         }
+    }
+
+    @Nested
+    class ToggleTaskTests {
+
+        @Test
+        @DisplayName("Should throw TaskNotFoundException when task is not found")
+        void shouldThrowTaskNotFoundExceptionWhenTaskIsNotFound() {
+            AuthenticatedUser user = new AuthenticatedUser(1L);
+            Long projectId = 1L;
+            Long taskId = 2L;
+            Project project = new Project();
+            project.setId(projectId);
+            given(taskDao.findById(taskId)).willReturn(Optional.empty());
+            given(projectService.findProjectById(projectId, user)).willReturn(project);
+
+            assertThatThrownBy(() -> {
+                taskService.toggleTask(user, projectId, taskId);
+            }).isInstanceOf(TaskNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("Should throw ForbiddenTaskException when task is not in project")
+        void shouldThrowForbiddenTaskExceptionWhenTaskIsNotInProject() {
+            AuthenticatedUser user = new AuthenticatedUser(1L);
+            Long projectId = 1L;
+            Long taskId = 2L;
+            Project project = new Project();
+            project.setId(projectId);
+            Task task = new Task();
+            task.setId(taskId);
+            task.setProject(new Project());
+            given(taskDao.findById(taskId)).willReturn(Optional.of(task));
+            given(projectService.findProjectById(projectId, user)).willReturn(project);
+
+            assertThatThrownBy(() -> {
+                taskService.toggleTask(user, projectId, taskId);
+            }).isInstanceOf(ForbiddenTaskException.class);
+        }
+
+        @Test
+        @DisplayName("Should toggle task when task is in project")
+        void ShouldToggleTaskWhenTaskIsInProject() {
+            AuthenticatedUser user = new AuthenticatedUser(1L);
+            Long projectId = 1L;
+            Long taskId = 2L;
+            Project project = new Project();
+            project.setId(projectId);
+            Task task = new Task();
+            task.setId(taskId);
+            task.setProject(project);
+            task.setComplete(false);
+            given(taskDao.findById(taskId)).willReturn(Optional.of(task));
+            given(projectService.findProjectById(projectId, user)).willReturn(project);
+
+            taskService.toggleTask(user, projectId, taskId);
+            assertThat(task.isComplete()).isTrue();
+        }
+
+
     }
 
 }

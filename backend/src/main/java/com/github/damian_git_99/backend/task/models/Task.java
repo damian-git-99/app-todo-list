@@ -25,6 +25,8 @@ public class Task {
     private String description;
     @Enumerated(value = EnumType.STRING)
     private Priority priority;
+    @Column(name = "is_complete")
+    private boolean isComplete;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     @ToString.Exclude

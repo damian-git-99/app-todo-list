@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Button, Card, Col, Container, ListGroup, ProgressBar, Row, Spinner } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { deleteProjectById, findProjectById } from '../api/ProjectApi';
-import { deleteTaskById } from '../api/TaskApi';
+import { deleteTaskById, toggleTask } from '../api/TaskApi';
 import { UserContext } from '../context/ContextProvider';
 import { confirmDialog, successMessage } from '../util/messages';
 import { CreateTask } from './CreateTask';
@@ -17,7 +17,7 @@ export const ProjectDetails = () => {
   const [project, setproject] = useState({ tasks: [] });
   const [taskCreated, settaskCreated] = useState(false);
   const id = params.id;
-
+  console.log(project.tasks);
   useEffect(() => {
     setisLoading(true);
     settaskCreated(false);
@@ -49,8 +49,31 @@ export const ProjectDetails = () => {
             tasks: project.tasks.filter(task => task.id !== taskId)
           });
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error.message));
     });
+  };
+
+  const handleToggleTask = (taskId) => {
+    toggleTask(id, taskId, context.token)
+      .then(_ => {
+        setproject({
+          ...project,
+          tasks: project.tasks.map(task => {
+            if (task.id === taskId) {
+              task.complete = !task.complete;
+            }
+            return task;
+          })
+        });
+      })
+      .catch(error => console.log(error));
+    console.log(taskId);
+  };
+
+  const calculatePercentageOfCompletedTasks = () => {
+    const tasks = project.tasks;
+    const completedTasks = tasks.filter(task => task.complete === true);
+    return (completedTasks.length / tasks.length) * 100;
   };
 
   return (
@@ -72,8 +95,8 @@ export const ProjectDetails = () => {
               <ProgressBar
                 striped
                 variant="primary"
-                now={25}
-                label='25%'
+                now={calculatePercentageOfCompletedTasks().toString()}
+                label={calculatePercentageOfCompletedTasks().toString() + '%'}
               />
             </Col>
             <Col className="col-3">
@@ -91,7 +114,7 @@ export const ProjectDetails = () => {
                 <Card.Body className="card-body">
                   <Card.Title>{project.name}</Card.Title>
                   <Card.Subtitle>
-                    Created at: {new Date(project.createdAt).toString()}
+                    Created at: {project.createdAt}
                   </Card.Subtitle>
                   <Card.Text>{project.description}</Card.Text>
                 </Card.Body>
@@ -101,7 +124,9 @@ export const ProjectDetails = () => {
                         <ListGroup.Item key={task.id} className="list-group-item">
                           <Row className='align-items-baseline'>
                             <Col>{ task.taskName }</Col>
-                            <Col>mark as completed</Col>
+                            <Col onClick={() => handleToggleTask(task.id)} >
+                              { task.complete ? <i className="fa-solid fa-check text-success fs-4"></i> : <i className="fa-solid fa-xmark text-danger fs-4"></i> }
+                            </Col>
                             <Col><TaskDetails/></Col>
                             <Col><Button onClick={() => handleDeleteTask(task.id)} variant='danger'>Delete task</Button></Col>
                           </Row>
