@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-export function TaskDetails ({ taskId }) {
+export function TaskDetails ({ task }) {
   const [show, setShow] = useState(false);
   return (
     <>
@@ -19,13 +19,14 @@ export function TaskDetails ({ taskId }) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
-            Task #4
+             { task.taskName }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            description of the task
+            { task.description }
           </p>
+          <p>Priority: {task.priority} </p>
         </Modal.Body>
       </Modal>
     </>
@@ -33,5 +34,5 @@ export function TaskDetails ({ taskId }) {
 }
 
 TaskDetails.propTypes = {
-  taskId: PropTypes.string.isRequired
+  task: PropTypes.object.isRequired
 };

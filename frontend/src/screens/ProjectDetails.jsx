@@ -127,7 +127,7 @@ export const ProjectDetails = () => {
                             <Col onClick={() => handleToggleTask(task.id)} >
                               { task.complete ? <i className="fa-solid fa-check text-success fs-4"></i> : <i className="fa-solid fa-xmark text-danger fs-4"></i> }
                             </Col>
-                            <Col><TaskDetails/></Col>
+                            <Col><TaskDetails task={task} /></Col>
                             <Col><Button onClick={() => handleDeleteTask(task.id)} variant='danger'>Delete task</Button></Col>
                           </Row>
                         </ListGroup.Item>
