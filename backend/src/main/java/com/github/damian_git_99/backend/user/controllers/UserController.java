@@ -61,11 +61,6 @@ public class UserController {
         User user = userService.findById(auth.getId())
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
-        UserResponse userResponse = UserResponse.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build();
-
         return ResponseEntity.ok(converter.toDto(user));
     }
 
@@ -75,11 +70,6 @@ public class UserController {
             , @RequestBody UserUpdateRequest request){
 
         User user = this.userService.updateUser(id, request);
-
-        UserResponse userResponse = UserResponse.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build();
 
         return ResponseEntity.ok(converter.toDto(user));
     }
