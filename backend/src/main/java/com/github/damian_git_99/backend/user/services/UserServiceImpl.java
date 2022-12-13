@@ -1,5 +1,7 @@
 package com.github.damian_git_99.backend.user.services;
 
+import com.github.damian_git_99.backend.user.dto.UserUpdateRequest;
+import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.utils.exceptions.InternalServerException;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.models.User;
@@ -70,6 +72,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> findById(Long id) {
         return userDao.findById(id);
+    }
+
+    @Override
+    public User updateUser(Long userId, UserUpdateRequest request) {
+        User user = this.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
+        String email = request.getEmail() != null ? request.getEmail() : user.getEmail();
+        String username = request.getUsername() != null ? request.getUsername() : user.getUsername();
+        user.setEmail(email);
+        user.setUsername(username);
+        return userDao.save(user);
     }
 
     @Override
