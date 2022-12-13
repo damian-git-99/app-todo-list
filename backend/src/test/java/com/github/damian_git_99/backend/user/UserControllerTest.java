@@ -3,6 +3,8 @@ package com.github.damian_git_99.backend.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.damian_git_99.backend.configs.security.SpringSecurityConfig;
 import com.github.damian_git_99.backend.user.controllers.UserController;
+import com.github.damian_git_99.backend.user.dto.UserResponse;
+import com.github.damian_git_99.backend.user.dto.UserUpdateRequest;
 import com.github.damian_git_99.backend.util.BaseControllerTest;
 import com.github.damian_git_99.backend.util.WithMockCustomUser;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
@@ -15,10 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atMostOnce;
@@ -194,6 +198,38 @@ class UserControllerTest extends BaseControllerTest {
         }
 
 
+    }
+
+    @Nested
+    class UpdateUserTests {
+        @Test
+        @DisplayName("ShouldUpdateUSer")
+        @WithMockCustomUser
+        void shouldUpdateUser() throws Exception {
+            Long id = 1L;
+            UserUpdateRequest request = new UserUpdateRequest();
+            request.setUsername("John Smith");
+            request.setEmail("JohnSmith@gmail.com");
+
+            User expectedUser = User.builder()
+                    .id(id)
+                    .username(request.getUsername())
+                    .email(request.getEmail())
+                    .build();
+
+
+            given(userService.updateUser(id, request)).willReturn(expectedUser);
+
+            MvcResult result = mvc.perform(put("/api/v1/users/{id}", id)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(mapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            UserResponse response = mapper.readValue(result.getResponse().getContentAsString(), UserResponse.class);
+            assertThat(response.getUsername()).isEqualTo(request.getUsername());
+            assertThat(response.getEmail()).isEqualTo(request.getEmail());
+        }
     }
 
 
