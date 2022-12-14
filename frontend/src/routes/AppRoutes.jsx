@@ -6,6 +6,7 @@ import { Home } from '../screens/Home';
 import { LogIn } from '../screens/LogIn';
 import { ProjectDetails } from '../screens/ProjectDetails';
 import { SignUp } from '../screens/SignUp';
+import { UpdateProfile } from '../screens/UpdateProfile';
 import { ProtectedRoutes } from './ProtectedRoutes';
 
 export const AppRoutes = () => {
@@ -19,6 +20,7 @@ export const AppRoutes = () => {
         <Route path='/' element={<Home/>} />
         <Route path='/projects/create-project' element={<CreateProject />} />
         <Route path='/projects/:id' element={<ProjectDetails />} />
+        <Route path='/edit-profile/:id' element={<UpdateProfile />} />
       </Route>
     </Routes>
     </>

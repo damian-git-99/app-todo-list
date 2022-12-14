@@ -17,7 +17,6 @@ export const ProjectDetails = () => {
   const [project, setproject] = useState({ tasks: [] });
   const [taskCreated, settaskCreated] = useState(false);
   const id = params.id;
-  console.log(project.tasks);
   useEffect(() => {
     setisLoading(true);
     settaskCreated(false);

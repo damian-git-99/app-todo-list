@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button, Container, Form, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/ContextProvider';
 
@@ -29,7 +29,7 @@ export const NavBar = () => {
           <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
             <Nav.Item className="nav-item dropdown">
               <NavDropdown title={userContext.username} id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
+                <Link className="dropdown-item" to="/edit-profile/1">Edit Profile</Link>
                 <NavDropdown.Item onClick={handleLogout}> Log Out </NavDropdown.Item>
               </NavDropdown>
             </Nav.Item>
@@ -40,7 +40,7 @@ export const NavBar = () => {
               <Link className="nav-link" to="/">My Projects</Link>
             </Nav.Item>
           </Nav>
-          <Form className="d-flex" role="search">
+          {/* <Form className="d-flex" role="search">
             <Form.Control
               type='search'
               placeholder='Search...'
@@ -48,7 +48,7 @@ export const NavBar = () => {
               className='me-2'
             />
             <Button variant='dark' type="submit"> Search</Button>
-          </Form>
+          </Form> */}
         </Navbar.Collapse>
       </Container>
     </Navbar>

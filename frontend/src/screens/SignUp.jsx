@@ -32,7 +32,6 @@ export const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(userContext);
     if (isThereAnEmptyField(username, email, password, repeatPassword)) {
       seterror('All fields must be completed');
       return;
