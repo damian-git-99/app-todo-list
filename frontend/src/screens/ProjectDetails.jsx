@@ -25,7 +25,7 @@ export const ProjectDetails = () => {
       .catch((e) => seterror(e.message))
       .finally((_) => setisLoading(false));
   }, [id, taskCreated]);
-  console.log(project);
+
   const handleDeleteProject = () => {
     confirmDialog(() => {
       deleteProjectById(context.token, id)
@@ -70,6 +70,7 @@ export const ProjectDetails = () => {
 
   const calculatePercentageOfCompletedTasks = () => {
     const tasks = project.tasks;
+    if (tasks.length === 0) return 0;
     const completedTasks = tasks.filter(task => task.complete === true);
     return (completedTasks.length / tasks.length) * 100;
   };
