@@ -1,5 +1,6 @@
 package com.github.damian_git_99.backend.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.damian_git_99.backend.project.models.Project;
 import com.github.damian_git_99.backend.task.dto.TaskResponse;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class ProjectDetailsResponse implements Serializable {
     private final Long id;
     private final String name;
     private final String description;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
     private final List<TaskResponse> tasks;
 }

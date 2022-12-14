@@ -3,6 +3,8 @@ package com.github.damian_git_99.backend.user.controllers;
 import com.github.damian_git_99.backend.configs.security.AuthenticatedUser;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.dto.UserResponse;
+import com.github.damian_git_99.backend.user.dto.UserResponseConverter;
+import com.github.damian_git_99.backend.user.dto.UserUpdateRequest;
 import com.github.damian_git_99.backend.user.models.User;
 import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.user.services.UserService;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private UserResponseConverter converter = new UserResponseConverter();
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -58,12 +61,17 @@ public class UserController {
         User user = userService.findById(auth.getId())
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
-        UserResponse userResponse = UserResponse.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build();
+        return ResponseEntity.ok(converter.toDto(user));
+    }
 
-        return ResponseEntity.ok(userResponse);
+    @ApiOperation(value = "This method is used to update the details of a user")
+    @PutMapping("/{id}")
+    ResponseEntity<UserResponse> updateUser(@PathVariable(name = "id") Long id
+            , @RequestBody UserUpdateRequest request){
+
+        User user = this.userService.updateUser(id, request);
+
+        return ResponseEntity.ok(converter.toDto(user));
     }
 
 }

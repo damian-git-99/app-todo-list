@@ -1,5 +1,7 @@
 package com.github.damian_git_99.backend.user.services;
 
+import com.github.damian_git_99.backend.user.dto.UserUpdateRequest;
+import com.github.damian_git_99.backend.user.exceptions.UserNotFoundException;
 import com.github.damian_git_99.backend.utils.exceptions.InternalServerException;
 import com.github.damian_git_99.backend.user.dto.UserRequest;
 import com.github.damian_git_99.backend.user.models.User;
@@ -72,7 +74,7 @@ class UserServiceImplTest {
                     .username("Irving")
                     .email("damian@gmail.com")
                     .password("123456").build();
-            
+
             given(userDao.findByEmail("damian@gmail.com"))
                     .willReturn(Optional.empty());
             assertThatThrownBy(() -> userService.signUp(userRequest))
@@ -120,6 +122,43 @@ class UserServiceImplTest {
 
             then(userDao).should(atMostOnce()).save(any());
 
+        }
+    }
+
+    @Nested
+    class UpdateUserTests {
+
+        @Test
+        @DisplayName("Should update user when user exists")
+        void shouldUpdateUserWhenUserExists() {
+            Long userId = 1L;
+            UserUpdateRequest request = new UserUpdateRequest("test_updated@test.com", "test_username_updated");
+
+            User expectedUser = User.builder()
+                    .id(userId)
+                    .email("test@test.com")
+                    .username("test_username")
+                    .build();
+
+            given(userDao.findById(1L)).willReturn(Optional.of(expectedUser));
+            given(userDao.save(expectedUser)).willReturn(expectedUser);
+
+            User actualUser = userService.updateUser(userId, request);
+            assertThat(actualUser.getUsername()).isEqualTo(request.getUsername());
+            assertThat(actualUser.getEmail()).isEqualTo(request.getEmail());
+        }
+
+        @Test
+        @DisplayName("Should throw UserNotFoundException when user does not exist")
+        void shouldThrowExceptionWhenUserDoesNotExist() {
+            Long userId = 2L;
+            UserUpdateRequest request = new UserUpdateRequest(null, null);
+
+            given(userDao.findById(userId)).willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> {
+                userService.updateUser(userId, request);
+            }).isInstanceOf(UserNotFoundException.class);
         }
     }
 

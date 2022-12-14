@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { createProject } from '../api/ProjectApi';
 import { UserContext } from '../context/ContextProvider';
 import { successMessage } from '../util/messages';
@@ -49,10 +49,10 @@ export const CreateProject = () => {
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 animate__animated animate__fadeIn">
       <Row>
         <Col>
-          <button className="btn btn-outline-dark px-4">Return</button>
+          <Link to={'/'} className="btn btn-outline-dark px-4">Return</Link>
         </Col>
         <Col>
           {error && <Alert variant="danger">{error}</Alert>}

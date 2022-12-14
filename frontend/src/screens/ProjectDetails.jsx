@@ -17,7 +17,6 @@ export const ProjectDetails = () => {
   const [project, setproject] = useState({ tasks: [] });
   const [taskCreated, settaskCreated] = useState(false);
   const id = params.id;
-  console.log(project.tasks);
   useEffect(() => {
     setisLoading(true);
     settaskCreated(false);
@@ -27,7 +26,7 @@ export const ProjectDetails = () => {
       .finally((_) => setisLoading(false));
   }, [id, taskCreated]);
 
-  const handleDeleteProject = (projectId) => {
+  const handleDeleteProject = () => {
     confirmDialog(() => {
       deleteProjectById(context.token, id)
         .then((_) => {
@@ -40,7 +39,6 @@ export const ProjectDetails = () => {
 
   const handleDeleteTask = (taskId) => {
     confirmDialog(() => {
-      // todo call api
       deleteTaskById(id, taskId, context.token)
         .then(response => {
           console.log(response);
@@ -72,12 +70,13 @@ export const ProjectDetails = () => {
 
   const calculatePercentageOfCompletedTasks = () => {
     const tasks = project.tasks;
+    if (tasks.length === 0) return 0;
     const completedTasks = tasks.filter(task => task.complete === true);
     return (completedTasks.length / tasks.length) * 100;
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 animate__animated animate__fadeIn">
       {error && <Alert variant="danger">{error}</Alert>}
         <Row className=' justify-content-center'>
           <Col sm={1}>
@@ -127,7 +126,7 @@ export const ProjectDetails = () => {
                             <Col onClick={() => handleToggleTask(task.id)} >
                               { task.complete ? <i className="fa-solid fa-check text-success fs-4"></i> : <i className="fa-solid fa-xmark text-danger fs-4"></i> }
                             </Col>
-                            <Col><TaskDetails/></Col>
+                            <Col><TaskDetails task={task} /></Col>
                             <Col><Button onClick={() => handleDeleteTask(task.id)} variant='danger'>Delete task</Button></Col>
                           </Row>
                         </ListGroup.Item>

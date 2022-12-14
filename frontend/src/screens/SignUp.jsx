@@ -32,7 +32,6 @@ export const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(userContext);
     if (isThereAnEmptyField(username, email, password, repeatPassword)) {
       seterror('All fields must be completed');
       return;
@@ -58,7 +57,7 @@ export const SignUp = () => {
   };
 
   return (
-    <Container fluid='lg'>
+    <Container fluid='lg' className='animate__animated animate__fadeIn'>
       <Row style={{ height: '500px' }} className="justify-content-center align-items-center">
         <h1 className="text-center">Signup</h1>
         {error && <Alert variant="danger">{error}</Alert>}
