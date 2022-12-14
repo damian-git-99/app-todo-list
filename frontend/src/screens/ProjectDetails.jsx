@@ -39,7 +39,6 @@ export const ProjectDetails = () => {
 
   const handleDeleteTask = (taskId) => {
     confirmDialog(() => {
-      // todo call api
       deleteTaskById(id, taskId, context.token)
         .then(response => {
           console.log(response);
@@ -76,7 +75,7 @@ export const ProjectDetails = () => {
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 animate__animated animate__fadeIn">
       {error && <Alert variant="danger">{error}</Alert>}
         <Row className=' justify-content-center'>
           <Col sm={1}>

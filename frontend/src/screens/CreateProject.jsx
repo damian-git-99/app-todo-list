@@ -49,7 +49,7 @@ export const CreateProject = () => {
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 animate__animated animate__fadeIn">
       <Row>
         <Col>
           <Link to={'/'} className="btn btn-outline-dark px-4">Return</Link>

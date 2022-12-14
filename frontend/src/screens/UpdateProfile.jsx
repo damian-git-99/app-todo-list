@@ -46,7 +46,7 @@ export const UpdateProfile = () => {
 
   // todo create form
   return (
-    <Container fluid="lg">
+    <Container fluid="lg" className='animate__animated animate__fadeIn'>
       <Row
         style={{ height: '500px' }}
         className="justify-content-center align-items-center"

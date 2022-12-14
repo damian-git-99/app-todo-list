@@ -24,7 +24,7 @@ export const Home = () => {
   }, []);
 
   return (
-    <Container className="container mt-5 pb-2">
+    <Container className="container mt-5 pb-2 animate__animated animate__fadeIn">
       <h1 className='text-center'>My Projects</h1>
       {error && <Alert variant="danger">{error}</Alert>}
         <Row className=' justify-content-center'>
