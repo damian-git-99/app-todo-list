@@ -72,7 +72,8 @@ export const ProjectDetails = () => {
     const tasks = project.tasks;
     if (tasks.length === 0) return 0;
     const completedTasks = tasks.filter(task => task.complete === true);
-    return (completedTasks.length / tasks.length) * 100;
+    const total = (completedTasks.length / tasks.length) * 100;
+    return Math.floor(total);
   };
 
   return (
