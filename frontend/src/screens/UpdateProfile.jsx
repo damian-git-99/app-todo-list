@@ -44,7 +44,6 @@ export const UpdateProfile = () => {
       });
   };
 
-  // todo create form
   return (
     <Container fluid="lg" className='animate__animated animate__fadeIn'>
       <Row

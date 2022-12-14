@@ -25,8 +25,8 @@ export const ProjectDetails = () => {
       .catch((e) => seterror(e.message))
       .finally((_) => setisLoading(false));
   }, [id, taskCreated]);
-
-  const handleDeleteProject = (projectId) => {
+  console.log(project);
+  const handleDeleteProject = () => {
     confirmDialog(() => {
       deleteProjectById(context.token, id)
         .then((_) => {
