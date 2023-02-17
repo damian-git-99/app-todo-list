@@ -12,17 +12,27 @@ services:
     volumes:
       - data-mysql:/var/lib/mysql
     restart: always
-  app:
+  spring-backend:
     build:
         context: ./
         dockerfile: ./backend/Dockerfile
-    container_name: app
+    container_name: spring-backend
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
       - "8080:8080"
     depends_on:
       - mysql
+    restart: always
+  vite-frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    container_name: vite-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - spring-backend
     restart: always
 
 volumes:
