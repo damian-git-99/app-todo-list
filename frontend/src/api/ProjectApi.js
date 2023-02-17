@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const URL = 'http://127.0.0.1:8080/api/v1/projects';
+
 export const createProject = async (project, token) => {
   const config = {
     headers: {
@@ -8,7 +10,7 @@ export const createProject = async (project, token) => {
     }
   };
   try {
-    const { data } = await axios.post('http://127.0.0.1:8080/api/v1/projects', project, config);
+    const { data } = await axios.post(URL, project, config);
     return data;
   } catch (error) {
     const message = error?.response?.data?.error || error.message;
@@ -25,7 +27,7 @@ export const findAllprojects = async (token) => {
     }
   };
   try {
-    const { data } = await axios.get('http://127.0.0.1:8080/api/v1/projects', config);
+    const { data } = await axios.get(URL, config);
     return data;
   } catch (error) {
     const message = error?.response?.data?.error || error.message;
@@ -42,7 +44,7 @@ export const findProjectById = async (token, id) => {
     }
   };
   try {
-    const { data } = await axios.get(`http://127.0.0.1:8080/api/v1/projects/${id}`, config);
+    const { data } = await axios.get(`${URL}/${id}`, config);
     return data;
   } catch (error) {
     const message = error?.response?.data?.error || error.message;
@@ -59,7 +61,7 @@ export const deleteProjectById = async (token, id) => {
     }
   };
   try {
-    const { data } = await axios.delete(`http://127.0.0.1:8080/api/v1/projects/${id}`, config);
+    const { data } = await axios.delete(`${URL}/${id}`, config);
     return data;
   } catch (error) {
     const message = error?.response?.data?.error || error.message;
