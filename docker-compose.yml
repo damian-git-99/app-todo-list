@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:8.0.19
+    container_name: mysql-container
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: 'app_spring'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: '1234'
+      MYSQL_ROOT_PASSWORD: '1234'
+    volumes:
+      - data-mysql:/var/lib/mysql
+    restart: always
+  app:
+    build:
+        context: ./
+        dockerfile: ./backend/Dockerfile
+    container_name: app
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    restart: always
+
+volumes:
+  data-mysql:
+    
