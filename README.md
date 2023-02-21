@@ -8,11 +8,13 @@ Application to create projects, along with a series of tasks using react and spr
 - Change username and password in file backend/src/main/resources/application.properties
 - Run Backend command in backend folder `./mvnw spring-boot:run`
 - Run Frontend command in frontend folder `npm install` & `npm run dev`
+- App runs on port: 5173
 ## Run Project with docker
 - clone the project `git clone https://github.com/damian-git-99/app-todo-list.git`
 - Install [docker](https://www.docker.com/products/docker-desktop/)
 - cd to the root of the project
 - Run the command `docker-compose up -d`
+- App runs on port: 5173
 
 ## Use cases
 - Signup
