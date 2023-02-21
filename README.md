@@ -29,3 +29,6 @@ Application to create projects, along with a series of tasks using react and spr
 - Create a task for a project
 - Delete Task
 - Mark task as complete
+
+![](https://i.ibb.co/Ln5Tw8b/Captura-de-pantalla-2023-02-21-121547.png)
+![](https://i.ibb.co/qydwCbY/Captura-de-pantalla-2023-02-21-121614.png)
