@@ -1,11 +1,11 @@
-FROM openjdk:11-slim-buster as builder
+FROM maven:3.6.3 as builder
 WORKDIR /app
 COPY ./backend/pom.xml .
 COPY ./backend/.mvn ./.mvn
 COPY ./backend/mvnw .
-RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
+RUN mvn clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
 COPY ./backend/src ./src
-RUN ./mvnw clean package -Dmaven.test.skip
+RUN mvn clean package -Dmaven.test.skip
 
 
 FROM openjdk:11-slim-buster
