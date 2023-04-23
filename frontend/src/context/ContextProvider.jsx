@@ -29,20 +29,16 @@ export const ContextProvider = (props) => {
   const [userState, setUserState] = useState(user);
 
   const initialState = async () => {
-    try {
-      const token = loadTokenFromLocalStorage();
-      if (!token) return;
-      const response = await userInfo(token);
-      const { email, username } = response;
-      setUserState({
-        isAuthenticated: true,
-        email,
-        username,
-        token
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const token = loadTokenFromLocalStorage();
+    if (!token) return;
+    const response = await userInfo(token);
+    const { email, username } = response;
+    setUserState({
+      isAuthenticated: true,
+      email,
+      username,
+      token
+    });
   };
 
   useEffect(() => {
