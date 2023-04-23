@@ -43,6 +43,7 @@ export const userInfo = async (token) => {
   } catch (error) {
     const status = error.response.status;
     if (status === 401 || status === 404) {
+      // if status is 401 or 404, remove token from localStorage, because  it's invalid
       localStorage.removeItem('token');
     }
     const message = error?.response?.data?.error || error.message;

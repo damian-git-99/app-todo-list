@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { userInfo } from '../api/UserApi';
 
 const user = {
@@ -10,48 +10,47 @@ const user = {
   setUser: () => {}
 };
 
-const loadUserInfo = () => {
+const loadTokenFromLocalStorage = () => {
   try {
     if (localStorage.getItem('token')) {
       const userJSON = localStorage.getItem('token');
       const token = JSON.parse(userJSON);
-      return {
-        isAuthenticated: true,
-        email: '',
-        username: '',
-        token
-      };
+      return token;
     }
-    return user;
+    return null;
   } catch (error) {
-    localStorage.removeItem('token');
-    return user;
+    return null;
   }
 };
 
 export const UserContext = React.createContext(user);
 
 export const ContextProvider = (props) => {
-  const [userState, setuserState] = useState(loadUserInfo());
-  useEffect(() => {
-    if (userState.isAuthenticated) {
-      // update user info
-      userInfo(userState.token)
-        .then(data => {
-          setuserState(state => {
-            return {
-              ...state,
-              ...data
-            };
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
+  const [userState, setUserState] = useState(user);
+
+  const initialState = async () => {
+    try {
+      const token = loadTokenFromLocalStorage();
+      if (!token) return;
+      const response = await userInfo(token);
+      const { email, username } = response;
+      setUserState({
+        isAuthenticated: true,
+        email,
+        username,
+        token
+      });
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  useEffect(() => {
+    initialState();
   }, []);
+
   return (
-    <UserContext.Provider value={ { ...userState, setUser: setuserState } }>
+    <UserContext.Provider value={ { ...userState, setUser: setUserState } }>
         { props.children }
     </UserContext.Provider>
   );
