@@ -19,6 +19,7 @@ export const SignUp = () => {
     password: '',
     repeatPassword: ''
   };
+
   const [form, setform] = useState(initialState);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState(false);

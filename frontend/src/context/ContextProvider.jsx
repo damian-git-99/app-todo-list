@@ -13,7 +13,6 @@ const user = {
 const loadUserInfo = () => {
   try {
     if (localStorage.getItem('token')) {
-      // get token from localstorage
       const userJSON = localStorage.getItem('token');
       const token = JSON.parse(userJSON);
       return {

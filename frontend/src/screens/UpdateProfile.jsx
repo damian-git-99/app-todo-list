@@ -12,6 +12,7 @@ export const UpdateProfile = () => {
     username: '',
     email: ''
   };
+
   const params = useParams();
   const [form, setform] = useState(initialForm);
   const userId = params.id;
@@ -51,12 +52,6 @@ export const UpdateProfile = () => {
         className="justify-content-center align-items-center"
       >
         <h1 className="text-center">Update User</h1>
-        {/* {error && <Alert variant="danger">{error}</Alert>}
-        <Row className=' justify-content-center'>
-          <Col sm={1}>
-            {loading && <Spinner animation='grow' /> }
-          </Col>
-        </Row> */}
         <Col md={6}>
           <Form onSubmit={handleSubmit}>
 
