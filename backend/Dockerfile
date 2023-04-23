@@ -1,8 +1,6 @@
 FROM maven:3.6.3 as builder
 WORKDIR /app
 COPY ./backend/pom.xml .
-COPY ./backend/.mvn ./.mvn
-COPY ./backend/mvnw .
 RUN mvn clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
 COPY ./backend/src ./src
 RUN mvn clean package -Dmaven.test.skip
